@@ -1,7 +1,14 @@
 ---
-title: "beojemann.gitub.io"
+title: "Ben (Emilio) Ojemann"
+image: IMG_6773.JPG
+about:
+  template: jolla
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/beojemann
 ---
 
-This is a Quarto website.
+Hi! My name is Ben "Emilio" Ojemann, I am a doubel major in **Hydrologic Sciences & Policy** and **Physical Geography** at UC Santa Barbara.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+I grew up in Seattle, WA where the Pacific Northwest instilled in me a deep love for the great outdoors and the environment.
