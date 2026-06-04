@@ -1,14 +1,22 @@
 ---
-title: "Ben (Emilio) Ojemann"
+title: "Ben \"Emilio\" Ojemann"
 image: IMG_6773.JPG
 about:
   template: jolla
   links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/beojemann/
+      target: _blank
     - icon: github
       text: Github
       href: https://github.com/beojemann
+      target: _blank
+    - icon: envelope
+      text: Mail
+      href: beojemann@ucsb.edu
 ---
 
-Hi! My name is Ben "Emilio" Ojemann, I am a double major in **Hydrologic Sciences & Policy** and **Physical Geography** at UC Santa Barbara.
+Hi! My name is Ben Ojemann, though I also go by Emilio. I am currently a double major in **Hydrologic Sciences & Policy** and **Physical Geography** at UC Santa Barbara.
 
-I grew up in Seattle, WA where the Pacific Northwest instilled in me a deep love for the great outdoors and the environment. 
+I grew up in Seattle, WA where the Pacific Northwest instilled in me a deep love for the great outdoors and the environment. After moving away for undergrad at UCSB, I have committed myself to improving natural resources through rigorous coursework, technical experience, field studies, and research.
