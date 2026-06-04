@@ -3,8 +3,9 @@ project:
   output-dir: docs
 
 website:
-  title: "Ben (Emilio) Ojemann"
+  title: "EMILIO"
   navbar:
+    background: primary
     left:
       - href: index.qmd
         text: Home
@@ -13,13 +14,13 @@ website:
       - href: project.qmd
         text: Projects
       - href: fun.qmd
-        text: Personal-Interests
+        text: Personal Interests
       - href: resume.qmd
         text: Resume
         
 format:
   html:
-    theme: cosmo
+    theme: [lux, custom.scss]
     css: styles.css
 
 
