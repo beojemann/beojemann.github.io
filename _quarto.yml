@@ -21,7 +21,7 @@ website:
 format:
   html:
     theme: [lux, custom.scss]
-    css: style.css
+    css: styles.css
 
 
 
