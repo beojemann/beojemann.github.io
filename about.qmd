@@ -9,7 +9,7 @@ I was born in the beautiful city of Mazatenango, Guatemala before permanently re
 
 ![San Miguel Escobar, Guatemala](images/SanMiguelEscobar.JPG){width=51%} ![Mazatenango, Guatemala](images/Foto_mazate.jpg){width=45%}
 
-Growing up in Seattle largely shaped who I am today. I was lucky to have been surrounded by the towering Cascades mountains, powerful rivers, lush forests, and strong coastlines. I was instantly drawn the outdoors. This connection is a big reason why I ended up studying the environment.
+Growing up in Seattle largely shaped who I am today. I was lucky to have been surrounded by the towering Cascades mountains, powerful rivers, lush forests, and strong coastlines. I was instantly drawn to the outdoors. This connection is a big reason for why I ended up studying the environment.
 
 ![](images/Seattle_skyline.jpg)
 
@@ -17,7 +17,7 @@ Growing up in Seattle largely shaped who I am today. I was lucky to have been su
 
 ##### What I'm doing at UCSB
 
-I am currently working towards two degrees at UC Santa Barbara: one in Hydrology and the other in Physical Geography. My academic path has been shaped by an obsession with water and the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science and policy frameworks governing the management of these resources. On the geography side, I've completed two full GIS series where I built technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
+I am currently working towards two degrees at UC Santa Barbara: one in Hydrology and the other in Physical Geography. The trajectory of my academic and professional path has been shaped by an obsession with water and my experiences exploring the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science, and policy governing the management of these resources. On the geography side, I've completed two full GIS series where I built technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
 
 Beyond coursework, I am a Student Research Lead at the university's **Cheadle Center for Biodiversity and Ecological Restoration**, where I conduct ecological research, work with interns, and contribute to wetland restoration at the North Campus Open Space (NCOS). 
 
@@ -28,7 +28,7 @@ Beyond coursework, I am a Student Research Lead at the university's **Cheadle Ce
 
 ##### Hobbies
 
-When I'm not in the field or staring at satellite imagery, you'll probably find me on a nearby pitch, playing ultimate frisbee. I've played competitively since middle school, and it's one of my favorite ways to relieve stress, connect with people, and occasionally hit the grass for a layout!
+When I'm not in the field or staring at satellite imagery, you'll probably find me on a nearby pitch, playing ultimate frisbee. I've played competitively since middle school, and now lead a UCSB club team to victory. It is among my favorite ways to relieve stress, connect with people, and occasionally hit the grass for a layout!
 
 ![](images/_Q6I1042.jpg)
 

@@ -43,7 +43,7 @@ Calculated as `(Green - NIR) / (Green + NIR)`. Highlights water bodies and veget
 
 ### Code Walkthrough
 
-Here is the core workflow from the lab. Each step is annotated to explain what it does and why.
+Here is the core workflow from the lab. Each step is annotated to explain what it does.
 
 **Step 1: Authenticate and initialize Google Earth Engine**
 
