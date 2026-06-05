@@ -1,0 +1,161 @@
+---
+title: "Land Cover Change Detection Using Landsat Time Series in Google Earth Engine"
+description: "Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis"
+author: "Emilio Ojemann"
+date: "2026-05-15"
+categories: [GIS, Remote Sensing, Python, Google Earth Engine]
+image: ../../images/Lab4_Landsat_Image.png
+---
+
+### Overview
+
+One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today... but a time series generates the story of how it got there. In this lab, I used Google Earth Engine (GEE) to analyze land cover change using Landsat imagery and spectral indices. This platform gives you access to decades of various satellite imagery without actually downloading a single file. 
+
+So the core skill here is **time series analysis**. This means pulling imagery across many years, calculating an index for each image, and then plotting how that index changes over time. This kind of analysis is used in real-world environmental work to track all sorts of changes including: vegetation stress, drought impacts, urban expansion, and water resources.
+
+---
+
+### What is Google Earth Engine?
+
+Google Earth Engine is a cloud-based platform created specifically for geospatial analysis. You write code that runs on Google's servers, which means you can access and analyze decades of imagery relatively quickly. In this course we used GEE through Python (using the `geemap` library), meaning you can visualize results in an interactive map directly in a a Google Jupyter notebook.
+
+---
+
+### Landsat
+
+Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth's surface since 1972. This makes it the longest continuous space-based record of Earth's land surface ever. Each satellite captures multi-spectral imagery, meaning it records light in multiple wavelength bands... beyond just visible color. It includes near-infrared and shortwave infrared bands, and this is how scientists analyze vegetation and water.
+
+In this lab I worked with **Landsat 8**, which captures imagery at a 30-meter resolution with a 16-day revisit time.
+
+---
+
+### Spectral Indices
+
+Rather than analyzing raw band values, remote sensing scientists calculate **spectral indices** — ratios of band combinations that highlight specific features. Two indices were central to this lab:
+
+**NDVI (Normalized Difference Vegetation Index)**
+Calculated as `(NIR - Red) / (NIR + Red)`. Values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.
+
+**NDWI (Normalized Difference Water Index)**
+Calculated as `(Green - NIR) / (Green + NIR)`. Highlights water bodies and vegetation water content. Positive values indicate open water or moisture-stressed vegetation.
+
+---
+
+### Code Walkthrough
+
+Here is the core workflow from the lab. Each step is annotated to explain what it does and why.
+
+**Step 1: Authenticate and initialize Google Earth Engine**
+
+```python
+import ee
+import geemap
+
+# Authenticate your Google account to access GEE
+ee.Authenticate()
+
+# Initialize the Earth Engine API
+ee.Initialize()
+```
+
+**Step 2: Define the study area**
+
+```python
+# Define a point of interest - GEE will center the analysis here
+# Coordinates are longitude, latitude
+point = ee.Geometry.Point([-119.5, 37.5])
+
+# Buffer the point to create a region of interest (50km radius)
+roi = point.buffer(50000)
+```
+
+**Step 3: Load and filter the Landsat 8 image collection**
+
+```python
+# Load Landsat 8 Surface Reflectance collection
+# Surface Reflectance means atmospheric correction has already been applied
+landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2') \
+    .filterBounds(roi) \           # Only images that overlap our region
+    .filterDate('2014-01-01', '2023-12-31') \  # Date range: 2014-2023
+    .filter(ee.Filter.lt('CLOUD_COVER', 20))   # Less than 20% cloud cover
+```
+
+**Step 4: Calculate NDVI for each image**
+
+```python
+# Define a function to calculate NDVI and add it as a new band
+def calculate_ndvi(image):
+    # Select NIR (Band 5) and Red (Band 4) from Landsat 8
+    nir = image.select('SR_B5')
+    red = image.select('SR_B4')
+    
+    # Calculate NDVI using the normalizedDifference method
+    ndvi = image.normalizedDifference(['SR_B5', 'SR_B4']).rename('NDVI')
+    
+    # Add NDVI as a new band to the image and return
+    return image.addBands(ndvi)
+
+# Apply the function to every image in the collection using .map()
+landsat_ndvi = landsat.map(calculate_ndvi)
+```
+
+**Step 5: Extract time series and plot**
+
+```python
+# Create a chart of mean NDVI over time within the region of interest
+import geemap.chart as chart
+
+# Reduce each image to a single mean NDVI value for the ROI
+timeseries = landsat_ndvi.select('NDVI').map(
+    lambda img: img.reduceRegion(
+        reducer=ee.Reducer.mean(),
+        geometry=roi,
+        scale=30
+    )
+)
+
+# Plot the time series
+chart.image_series(
+    image_collection=landsat_ndvi,
+    region=roi,
+    reducer=ee.Reducer.mean(),
+    scale=30,
+    x_property='system:time_start',
+    y_property='NDVI'
+)
+```
+
+**Step 6: Visualize on an interactive map**
+
+```python
+# Create an interactive map centered on our region
+Map = geemap.Map()
+Map.centerObject(roi, zoom=8)
+
+# Define visualization parameters for NDVI
+# Green palette: low NDVI = white/yellow, high NDVI = dark green
+ndvi_vis = {
+    'min': -0.2,
+    'max': 0.8,
+    'palette': ['white', 'yellow', 'green', 'darkgreen']
+}
+
+# Add a single year's NDVI composite to the map
+ndvi_2023 = landsat_ndvi \
+    .filterDate('2023-06-01', '2023-09-01') \
+    .median() \
+    .select('NDVI')
+
+Map.addLayer(ndvi_2023, ndvi_vis, 'NDVI 2023')
+Map.addLayerControl()
+Map
+```
+
+---
+
+### What the Results Show
+
+
+The time series plot reveals clear seasonal patterns in NDVI. Values tend to peak each summer as vegetation becomes more and more green, then drop through the fall and winter. Across the time series, you can start to see some inter-annual variation: during drought years summer peaks are suppressed, while wet years have peaks showing earlier and have stronger greening. This is what hydrologists and ecologists like to use when tracking environmental responses to climate change.
+
+---

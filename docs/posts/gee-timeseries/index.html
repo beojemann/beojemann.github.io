@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Emilio Ojemann">
+<meta name="dcterms.date" content="2026-05-15">
+<meta name="description" content="Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis">
 
-<title>index – EMILIO</title>
+<title>Land Cover Change Detection Using Landsat Time Series in Google Earth Engine – EMILIO</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -125,13 +163,168 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Land Cover Change Detection Using Landsat Time Series in Google Earth Engine</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">GIS</div>
+    <div class="quarto-category">Remote Sensing</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Google Earth Engine</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Emilio Ojemann </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 15, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="overview" class="level3">
+<h3 class="anchored" data-anchor-id="overview">Overview</h3>
+<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today… but a time series generates the story of how it got there. In this lab, I used Google Earth Engine (GEE) to analyze land cover change using Landsat imagery and spectral indices. This platform gives you access to decades of various satellite imagery without actually downloading a single file.</p>
+<p>So the core skill here is <strong>time series analysis</strong>. This means pulling imagery across many years, calculating an index for each image, and then plotting how that index changes over time. This kind of analysis is used in real-world environmental work to track all sorts of changes including: vegetation stress, drought impacts, urban expansion, and water resources.</p>
+<hr>
+</section>
+<section id="what-is-google-earth-engine" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-google-earth-engine">What is Google Earth Engine?</h3>
+<p>Google Earth Engine is a cloud-based platform created specifically for geospatial analysis. You write code that runs on Google’s servers, which means you can access and analyze decades of imagery relatively quickly. In this course we used GEE through Python (using the <code>geemap</code> library), meaning you can visualize results in an interactive map directly in a a Google Jupyter notebook.</p>
+<hr>
+</section>
+<section id="landsat" class="level3">
+<h3 class="anchored" data-anchor-id="landsat">Landsat</h3>
+<p>Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures multi-spectral imagery, meaning it records light in multiple wavelength bands… beyond just visible color. It includes near-infrared and shortwave infrared bands, and this is how scientists analyze vegetation and water.</p>
+<p>In this lab I worked with <strong>Landsat 8</strong>, which captures imagery at a 30-meter resolution with a 16-day revisit time.</p>
+<hr>
+</section>
+<section id="spectral-indices" class="level3">
+<h3 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h3>
+<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong> — ratios of band combinations that highlight specific features. Two indices were central to this lab:</p>
+<p><strong>NDVI (Normalized Difference Vegetation Index)</strong> Calculated as <code>(NIR - Red) / (NIR + Red)</code>. Values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
+<p><strong>NDWI (Normalized Difference Water Index)</strong> Calculated as <code>(Green - NIR) / (Green + NIR)</code>. Highlights water bodies and vegetation water content. Positive values indicate open water or moisture-stressed vegetation.</p>
+<hr>
+</section>
+<section id="code-walkthrough" class="level3">
+<h3 class="anchored" data-anchor-id="code-walkthrough">Code Walkthrough</h3>
+<p>Here is the core workflow from the lab. Each step is annotated to explain what it does and why.</p>
+<p><strong>Step 1: Authenticate and initialize Google Earth Engine</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ee</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Authenticate your Google account to access GEE</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ee.Authenticate()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Earth Engine API</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ee.Initialize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 2: Define the study area</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a point of interest - GEE will center the analysis here</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Coordinates are longitude, latitude</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> ee.Geometry.Point([<span class="op">-</span><span class="fl">119.5</span>, <span class="fl">37.5</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Buffer the point to create a region of interest (50km radius)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>roi <span class="op">=</span> point.<span class="bu">buffer</span>(<span class="dv">50000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 3: Load and filter the Landsat 8 image collection</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Landsat 8 Surface Reflectance collection</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Surface Reflectance means atmospheric correction has already been applied</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>landsat <span class="op">=</span> ee.ImageCollection(<span class="st">'LANDSAT/LC08/C02/T1_L2'</span>) <span class="op">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .filterBounds(roi) \           <span class="co"># Only images that overlap our region</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .filterDate(<span class="st">'2014-01-01'</span>, <span class="st">'2023-12-31'</span>) \  <span class="co"># Date range: 2014-2023</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(ee.Filter.lt(<span class="st">'CLOUD_COVER'</span>, <span class="dv">20</span>))   <span class="co"># Less than 20% cloud cover</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 4: Calculate NDVI for each image</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to calculate NDVI and add it as a new band</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndvi(image):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Select NIR (Band 5) and Red (Band 4) from Landsat 8</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    nir <span class="op">=</span> image.select(<span class="st">'SR_B5'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    red <span class="op">=</span> image.select(<span class="st">'SR_B4'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate NDVI using the normalizedDifference method</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ndvi <span class="op">=</span> image.normalizedDifference([<span class="st">'SR_B5'</span>, <span class="st">'SR_B4'</span>]).rename(<span class="st">'NDVI'</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add NDVI as a new band to the image and return</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image.addBands(ndvi)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the function to every image in the collection using .map()</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>landsat_ndvi <span class="op">=</span> landsat.<span class="bu">map</span>(calculate_ndvi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 5: Extract time series and plot</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a chart of mean NDVI over time within the region of interest</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap.chart <span class="im">as</span> chart</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce each image to a single mean NDVI value for the ROI</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>timeseries <span class="op">=</span> landsat_ndvi.select(<span class="st">'NDVI'</span>).<span class="bu">map</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> img: img.reduceRegion(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        reducer<span class="op">=</span>ee.Reducer.mean(),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        geometry<span class="op">=</span>roi,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span><span class="dv">30</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the time series</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>chart.image_series(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    image_collection<span class="op">=</span>landsat_ndvi,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    region<span class="op">=</span>roi,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span>ee.Reducer.mean(),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    x_property<span class="op">=</span><span class="st">'system:time_start'</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    y_property<span class="op">=</span><span class="st">'NDVI'</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 6: Visualize on an interactive map</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an interactive map centered on our region</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Map <span class="op">=</span> geemap.Map()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Map.centerObject(roi, zoom<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define visualization parameters for NDVI</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Green palette: low NDVI = white/yellow, high NDVI = dark green</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ndvi_vis <span class="op">=</span> {</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'min'</span>: <span class="op">-</span><span class="fl">0.2</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max'</span>: <span class="fl">0.8</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'palette'</span>: [<span class="st">'white'</span>, <span class="st">'yellow'</span>, <span class="st">'green'</span>, <span class="st">'darkgreen'</span>]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a single year's NDVI composite to the map</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ndvi_2023 <span class="op">=</span> landsat_ndvi <span class="op">\</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    .filterDate(<span class="st">'2023-06-01'</span>, <span class="st">'2023-09-01'</span>) <span class="op">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    .median() <span class="op">\</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">'NDVI'</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>Map.addLayer(ndvi_2023, ndvi_vis, <span class="st">'NDVI 2023'</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>Map.addLayerControl()</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>Map</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="what-the-results-show" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-results-show">What the Results Show</h3>
+<p>The time series plot reveals clear seasonal patterns in NDVI. Values tend to peak each summer as vegetation becomes more and more green, then drop through the fall and winter. Across the time series, you can start to see some inter-annual variation: during drought years summer peaks are suppressed, while wet years have peaks showing earlier and have stronger greening. This is what hydrologists and ecologists like to use when tracking environmental responses to climate change.</p>
+<hr>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
