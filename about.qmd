@@ -1,8 +1,7 @@
 ---
 title: "About Me"
 ---
-
----
+Learn about who I am and what keeps me going outside of the lab.
 
 ##### Where I'm From
 

@@ -6,3 +6,5 @@ listing:
   type: default
   categories: true
 ---
+
+Below is a collection my academic work and research projects that utilize GIS, remote sensing, and other technical methods for applied hydrology and ecology work. Click each to learn more. 
