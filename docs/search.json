@@ -4,7 +4,7 @@
     "href": "project.html",
     "title": "Projects",
     "section": "",
-    "text": "Coming soon."
+    "text": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS\n\n\n\nResearch\n\nEcology\n\nGIS\n\n\n\n\n\n\n\n\n\nMay 13, 2026\n\n\nBen (Emilio) Ojemann\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -40,5 +40,47 @@
     "title": "About Me",
     "section": "",
     "text": "I was born in the beautiful city of Mazatenango, Guatemala before relocating to Seattle, Washington.\n Growing up in Seattle largely shaped who I am today. I was lucky to have been surrounded by the towering Cascades mountains, powerful rivers, lush forests, and strong coastlines. I was instantly drawn the outdoors. This connection is a big reason why I ended up studying the environment."
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html",
+    "href": "posts/ncos-waterbirds/index.html",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "",
+    "text": "Overview\nThe North Campus Open Space (NCOS) is an actively restoring estuary situated directly adjacent to the UC Santa Barbara campus. As a Student Research Lead at the Cheadle Center for Biodiversity and Ecological Restoration, I designed and led my own study investigating the spatial and trophic relationships between local waterbirds and aquatic invertebrates across four habitat zones in the upper arms of the Devereux Slough.\n\n\n\nPhotograph: Bill Dewey\n\n\n\n\nThe Question\nAs NCOS continues to restore its historic tidal connectivity and diverse, native habitats, a key ecological management question emerges: how are waterbirds and their invertebrate prey distributed across the wetland, and how do habitat zones influence those patterns? Getting a good understanding of these these linkages can directly inform restoration decisions such as deciding to prioritize habitat work\n\n\nMethods\nTo investigate these patterns, I combined monthly waterbird survey data with quarterly aquatic invertebrate sampling across four distinct habitat zones at Devereux Slough: the main channel and its mudflats, the Phelps Creek confluence, constructed freshwater ponds, and seasonal vernal pools. Each zone was ecologically distinct (different salinity gradients, water depths, and vegetation structures) despite being a part of the same restoration site. After linking the invertebrate community in each zone with published waterbird diets, I built trophic networks: visual maps of who is eating what, and where. All spatial analysis and network visualization were carried out in ArcGIS and R.\n\n\nResults\nThe main channel and mudflats support the greatest waterbird diversity at NCOS, with a dense, generalist-dominated network of 25 waterbird species feeding on 9 invertebrate taxa. The Phelps Creek confluence tells a different story: Rails and Willets specialize heavily on oligochaeta worms. This saline-freshwater junction may allow for reduced competition between specialicists and generalists as it creates such a unique niche. Overall, there is high overlap of waterbird species overlap across all four zones, with only the Wilson’s Snipe recorded exclusively in vernal pools.\n\n\nTakeaways\n\nFood web structure, not just water presence, largely shapes how waterbirds use restored wetland habitats.\nFine-scale habitat monitoring captures ecologically meaningful variation that broad site-level surveys miss entirely - something restoration managers at other natural reserves can directly work on.\n\nView full poster on eScholarship\nI presented my work at the UCSB Undergraduate Research and Creative Activities (URCA) poster colloquium on May 13, 2026."
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html#overview",
+    "href": "posts/ncos-waterbirds/index.html#overview",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "",
+    "text": "The North Campus Open Space (NCOS) is an actively restoring wetland adjacent to UC Santa Barbara’s campus. As a Student Research Lead at the Cheadle Center for Biodiversity and Ecological Restoration, I designed and led a study investigating the spatial and trophic relationships between waterbirds, aquatic invertebrates, and tidal dynamics across four habitat zones at Devereux Slough.\n\n\n\nPhotograph: Bill Dewey"
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html#the-question",
+    "href": "posts/ncos-waterbirds/index.html#the-question",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "The Question",
+    "text": "The Question\nAs NCOS continues to restore tidal connectivity and native habitat, a key management question emerges: how are waterbirds and their invertebrate prey distributed across the wetland, and how does tidal stage influence those patterns? Understanding these linkages can directly inform restoration decisions — where to prioritize habitat work, and what ecological benchmarks to track over time."
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html#methods",
+    "href": "posts/ncos-waterbirds/index.html#methods",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "Methods",
+    "text": "Methods\nI conducted systematic waterbird point-count surveys across four habitat zones while simultaneously collecting aquatic invertebrate samples. I then built bipartite trophic networks linking bird species to invertebrate prey based on diet literature, and analyzed how network structure varied by habitat and tidal stage using GIS-based spatial analysis in ArcGIS and R."
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html#results",
+    "href": "posts/ncos-waterbirds/index.html#results",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "Results",
+    "text": "Results\nThis work was presented at the UCSB Undergraduate Research and Creative Activities (URCA) poster colloquium in May 2026.\nView full poster on eScholarship"
+  },
+  {
+    "objectID": "posts/ncos-waterbirds/index.html#what-we-found",
+    "href": "posts/ncos-waterbirds/index.html#what-we-found",
+    "title": "Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS",
+    "section": "What We Found",
+    "text": "What We Found\nThe slough supports the greatest waterbird diversity on site, with a dense, generalist-dominated network connecting 25 waterbird species to nine invertebrate taxa. The Phelps Creek confluence tells a different story — rails and Willets there specialize heavily on Oligochaeta worms, likely because reduced competition with generalists at this unique saline-freshwater junction opens up that niche. Species overlap across all four zones is high, with only the Wilson’s Snipe recorded exclusively in vernal pools.\nThe big takeaway: food web structure, not just water presence, shapes how waterbirds use restored wetland habitat. Fine-scale habitat monitoring captures ecologically meaningful variation that broad site-level surveys miss entirely — something restoration managers at NCOS can directly act on.\nI presented my work at the UCSB Undergraduate Research and Creative Activities (URCA) poster colloquium in May 2026.\nView full poster on eScholarship"
   }
 ]

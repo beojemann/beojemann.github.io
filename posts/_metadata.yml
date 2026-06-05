@@ -1,0 +1,6 @@
+# This file applies the settings to every post in this posts folder
+
+# when freeze is true it means that Quarto won't try to re-execute code in posts themselves when rendering the whole site, which is going to be important for GEE/Python code
+
+
+freeze: true
