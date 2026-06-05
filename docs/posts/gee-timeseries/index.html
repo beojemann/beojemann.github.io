@@ -8,7 +8,7 @@
 
 <meta name="author" content="B. Emilio Ojemann">
 <meta name="dcterms.date" content="2026-05-15">
-<meta name="description" content="Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis">
+<meta name="description" content="Using Google Earth Engine and Python to analyze land cover change across multiple decades via spectral indices and a time series analysis">
 
 <title>Land Cover Change Detection Using Landsat Time Series in Google Earth Engine – EMILIO</title>
 <style>
@@ -178,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div>
   <div class="description">
-    Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis
+    Using Google Earth Engine and Python to analyze land cover change across multiple decades via spectral indices and a time series analysis
   </div>
 </div>
 
@@ -209,13 +209,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level3">
 <h3 class="anchored" data-anchor-id="overview">Overview</h3>
-<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today… but a time series generates the story of how it got there. In this lab, I used Google Earth Engine (GEE) to analyze land cover change using Landsat imagery and spectral indices. This platform gives you access to decades of various satellite imagery without actually downloading a single file.</p>
-<p>So the core skill here is <strong>time series analysis</strong>. This means pulling imagery across many years, calculating an index for each image, and then plotting how that index changes over time. This kind of analysis is used in real-world environmental work to track all sorts of changes including: vegetation stress, drought impacts, urban expansion, and water resources.</p>
+<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today, but a time series generates the story of how it got there. In this lab, I used Google Earth Engine (GEE) to analyze land cover change using Landsat imagery and spectral indices. GEE gives you access to decades of various satellite imagery without the user actually downloading a single file.</p>
+<p>The core skill applied here is <strong>time series analysis</strong>. In general terms, this means pulling imagery across many years, calculating an index for each image, and then plotting how that index changed over time. This is the kind of analysis used in real-world environmental work to track all sorts of changes including in: vegetation stress, drought impacts, urban expansion, and water resources.</p>
 <hr>
 </section>
 <section id="what-is-google-earth-engine" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-google-earth-engine">What is Google Earth Engine?</h3>
-<p>Google Earth Engine is a cloud-based platform created specifically for geospatial analysis. You write code that runs on Google’s servers, which means you can access and analyze decades of imagery relatively quickly. In this course we used GEE through Python (using the <code>geemap</code> library), meaning you can visualize results in an interactive map directly in a a Google Jupyter notebook.</p>
+<p>Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data means downloading huge files to a hard drive. But GEE prevents this; the user writes code that runs on Google’s servers, right where all of the imagery already lives. As a result, you can analyze decades of global satellite data in mere seconds, and from any computer.</p>
+<p>In this course we used GEE through Python using the <code>geemap</code> library, which lets you write Python code and visualize results as interactive maps inside a Google Jupyter notebook (No extra software needed).</p>
 <hr>
 </section>
 <section id="landsat" class="level3">
@@ -226,7 +227,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="spectral-indices" class="level3">
 <h3 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h3>
-<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong> — ratios of band combinations that highlight specific features. Two indices were central to this lab:</p>
+<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong> - ratios of specific band combinations that highlight certain environmental features. Two indices were used in this lab:</p>
 <p><strong>NDVI (Normalized Difference Vegetation Index)</strong> Calculated as <code>(NIR - Red) / (NIR + Red)</code>. Values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
 <p><strong>NDWI (Normalized Difference Water Index)</strong> Calculated as <code>(Green - NIR) / (Green + NIR)</code>. Highlights water bodies and vegetation water content. Positive values indicate open water or moisture-stressed vegetation.</p>
 <hr>
