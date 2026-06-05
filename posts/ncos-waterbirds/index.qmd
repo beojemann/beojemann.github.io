@@ -1,6 +1,7 @@
 ---
 title: Visualizing Waterbird-Aquatic Invertebrates Linkages at NCOS
-author: "Ben (Emilio) Ojemann"
+description: "Using ecological and network analysis to investigate the relationship between waterbird assemblages and aquatic invertebrate prey across habitat zones at a restoring coastal wetland"
+author: "B. Emilio Ojemann"
 date: "2026-05-13"
 categories: [Research, Ecology, GIS]
 image: ../../images/NCOS_SB_Audobon_Society.jpg
