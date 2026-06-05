@@ -2,8 +2,9 @@
 title: "About Me"
 ---
 
-##### Where I'm From
+---
 
+##### Where I'm From
 
 I was born in the beautiful city of Mazatenango, Guatemala before permanently relocating to Seattle, Washington.
 
@@ -13,6 +14,8 @@ Growing up in Seattle largely shaped who I am today. I was lucky to have been su
 
 ![](images/Seattle_skyline.jpg)
 
+---
+
 ##### What I'm doing at UCSB
 
 I am currently working towards two degrees at UC Santa Barbara: one in Hydrology and the other in Physical Geography. My academic path has been shaped by an obsession with water and the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science and policy frameworks governing the management of these resources. On the geography side, I've completed two full GIS series where I built technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
@@ -21,6 +24,8 @@ Beyond coursework, I am a Student Research Lead at the university's **Cheadle Ce
 
 ![](images/URCA_poster.jpg){width=35%}
 ![](images/IMG_0750_Original.jpg){width=62%}
+
+--- 
 
 ##### Hobbies
 

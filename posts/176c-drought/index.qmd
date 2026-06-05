@@ -7,17 +7,21 @@ categories: [GIS, Research, Storymap]
 image: ../../images/176C_Slider_Image.png
 ---
 
+---
+
 ### Overview
 
 California's Central Valley produces over 25% of the nation's fruits, nuts, and table foods, and in Fresno and Kern Counties, roughly one in six to seven jobs is tied directly to agriculture. That makes these communities especially vulnerable to water scarcity. Within a single decade, California endured two major drought periods: 2007–2009 and the historically severe 2012–2016 drought. When water becomes scarce, farmers adapt by fallowing land or shifting crop types. Such changes may directly affect the local labor markets in these counties.
 
 This project asks: how are those drought-driven land-use changes in Fresno and Kern Counties associated with regional unemployment patterns from 2010 to 2016?
 
-
+---
 
 ### Project Poster
 
 <iframe src="../../images/176c_poster_pdf.pdf" width="100%" height="600px"></iframe>
+
+---
 
 ### Explore the StoryMap
 
