@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Ben “Emilio” Ojemann",
     "section": "",
-    "text": "Hi! My name is Ben Ojemann, though I also go by Emilio. I am currently a double major in Hydrologic Sciences & Policy and Physical Geography at UC Santa Barbara.\nI grew up in Seattle, WA where the Pacific Northwest instilled in me a deep love for the great outdoors and the environment. After moving away for undergrad at UCSB, I have committed myself to improving natural resources through rigorous coursework, technical experience, field studies, and research."
+    "text": "Hi! My name is Ben Ojemann, though I also go by Emilio. I am currently a double major in Hydrologic Sciences & Policy and Physical Geography at UC Santa Barbara.\nI grew up in Seattle, WA where the Pacific Northwest instilled in me a deep love for the great outdoors and the environment. After moving away for undergrad at UCSB, I have committed myself to improving natural resources through rigorous coursework, field work, and research."
   },
   {
     "objectID": "fun.html",
@@ -32,6 +32,13 @@
     "href": "about.html",
     "title": "About Me",
     "section": "",
-    "text": "Coming soon."
+    "text": "Where I’m From\nI was born in the beautiful city of Mazatenango, Guatemala before relocating to Seattle, Washington.\n \nGrowing up in Seattle largely shaped who I am today. I was lucky to have been surrounded by the towering Cascades mountains, powerful rivers, lush forests, and strong coastlines. I was instantly drawn the outdoors. This connection is a big reason why I ended up studying the environment.\n\n\n\nWhat I’m doing at UCSB\nI am currently working towards two degrees at UC Santa Barbara: one in Hydrology and the other in Physical Geography. My academic path has been shaped by an obsession with water and the diverse California landscapes. On the hydrology side, I’ve worked through coursework covering ground and surface water systems, soil science and policy frameworks governing the management of these resources. On the geography side, I’ve completed two full GIS series where I built technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python.\nBeyond coursework, I work as a Student Research Lead at the university’s Cheadle Center for Biodiversity and Ecological Restoration, where I conduct ecological research, work with interns, and contribute to wetland restoration at the North Campus Open Space (NCOS).\n \n\n\nHobbies\nWhen I’m not in the field or staring at satellite imagery, you’ll probably find me on a nearby field, playing ultimate frisbee. I’ve played competitively since middle school, and it’s one of my favorite ways to relieve stress, connect with people, and occasionally hit the grass for a layout!"
+  },
+  {
+    "objectID": "about.html#where-im-from",
+    "href": "about.html#where-im-from",
+    "title": "About Me",
+    "section": "",
+    "text": "I was born in the beautiful city of Mazatenango, Guatemala before relocating to Seattle, Washington.\n Growing up in Seattle largely shaped who I am today. I was lucky to have been surrounded by the towering Cascades mountains, powerful rivers, lush forests, and strong coastlines. I was instantly drawn the outdoors. This connection is a big reason why I ended up studying the environment."
   }
 ]
