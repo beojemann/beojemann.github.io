@@ -4,7 +4,7 @@ description: "Using ecological and network analysis to investigate the relations
 author: "B. Emilio Ojemann"
 date: "2026-05-13"
 categories: [Research, Ecology, GIS]
-image: ../../images/NCOS_SB_Audobon_Society.jpg
+image: ../../images/Devereux-Slough.jpg
 ---
 
 --- 
@@ -44,6 +44,4 @@ The main channel and mudflats support the greatest waterbird diversity at NCOS, 
 ---
 
 [View full poster on eScholarship](https://escholarship.org/uc/item/1bc3t7fb)
-
-**I presented my work at the UCSB Undergraduate Research and Creative Activities (URCA) poster colloquium on May 13, 2026.**
 
