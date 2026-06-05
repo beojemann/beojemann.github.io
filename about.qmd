@@ -5,7 +5,7 @@ title: "About Me"
 ##### Where I'm From
 
 
-I was born in the beautiful city of Mazatenango, Guatemala before relocating to Seattle, Washington.
+I was born in the beautiful city of Mazatenango, Guatemala before permanently relocating to Seattle, Washington.
 
 ![San Miguel Escobar, Guatemala](images/SanMiguelEscobar.JPG){width=51%} ![Mazatenango, Guatemala](images/Foto_mazate.jpg){width=45%}
 
@@ -17,7 +17,7 @@ Growing up in Seattle largely shaped who I am today. I was lucky to have been su
 
 I am currently working towards two degrees at UC Santa Barbara: one in Hydrology and the other in Physical Geography. My academic path has been shaped by an obsession with water and the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science and policy frameworks governing the management of these resources. On the geography side, I've completed two full GIS series where I built technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
 
-Beyond coursework, I work as a Student Research Lead at the university's **Cheadle Center for Biodiversity and Ecological Restoration**, where I conduct ecological research, work with interns, and contribute to wetland restoration at the North Campus Open Space (NCOS). 
+Beyond coursework, I am a Student Research Lead at the university's **Cheadle Center for Biodiversity and Ecological Restoration**, where I conduct ecological research, work with interns, and contribute to wetland restoration at the North Campus Open Space (NCOS). 
 
 ![](images/URCA_poster.jpg){width=35%}
 ![](images/IMG_0750_Original.jpg){width=62%}

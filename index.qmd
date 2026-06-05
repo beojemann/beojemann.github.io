@@ -1,6 +1,6 @@
 ---
 title: "Ben \"Emilio\" Ojemann"
-image: IMG_6773.JPG
+image: images/IMG_6773.JPG
 about:
   template: jolla
   links:
