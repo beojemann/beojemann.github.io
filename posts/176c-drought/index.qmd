@@ -27,4 +27,6 @@ This project asks: how are those drought-driven land-use changes in Fresno and K
 
 The interactive StoryMap below walks through our full analysis, visualizations, and findings in detail.
 
+[Open full StoryMap in new tab](https://storymaps.arcgis.com/stories/6abf4262b41d4e8bb9cb62682c4b67a2){target="_blank"}
+
 <iframe src="https://storymaps.arcgis.com/stories/6abf4262b41d4e8bb9cb62682c4b67a2" width="100%" height="700px" allowfullscreen></iframe>

@@ -2,18 +2,18 @@
 title: "Ben \"Emilio\" Ojemann"
 image: images/IMG_6773.JPG
 about:
-  template: jolla
+  template: trestles
   links:
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/beojemann/
       target: _blank
     - icon: github
-      text: Github
+      text: GitHub
       href: https://github.com/beojemann
       target: _blank
     - icon: envelope
-      text: Mail
+      text: Email
       href: mailto:beojemann@ucsb.edu
 ---
 
