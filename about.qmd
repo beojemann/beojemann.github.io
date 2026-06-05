@@ -17,7 +17,7 @@ Growing up in Seattle largely shaped who I am today. I was lucky being surrounde
 
 ##### What I'm doing at UCSB
 
-I am currently working towards two degrees at UC Santa Barbara: one in **Hydrology** and the other in **Physical Geography**. The trajectory of my academic and professional path is guided by an obsession with water and my experiences exploring the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science, and policy governing the management of these resources. On the geography side, I've completed two full GIS series where I built up technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
+I am currently working towards earning two degrees at UC Santa Barbara: one in **Hydrology** and the other in **Physical Geography**. The trajectory of my academic and professional path is guided by an obsession with water and my experiences exploring the diverse California landscapes. On the hydrology side, I've worked through coursework covering ground and surface water systems, soil science, and policy governing the management of these resources. On the geography side, I've completed two full GIS series where I built up technical skills in spatial analysis, cartography, and remote sensing in ArcGIS, Google Earth Engine, and Python. 
 
 Beyond the coursework, I am a **Student Research Lead** at the university's [Cheadle Center for Biodiversity and Ecological Restoration](https://www.ccber.ucsb.edu), where I conduct ecological research, work with interns, and contribute to wetland restoration at the North Campus Open Space (NCOS). 
 
