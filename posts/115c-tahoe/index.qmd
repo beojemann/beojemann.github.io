@@ -1,7 +1,7 @@
 ---
-title: "Snowpack Variability and Water Quality in the Lake Tahoe Basin"
+title: "Snowpack Variability and Water Quality in Lake Tahoe"
 description: "Leveraging remote sensing to analyze the year-to-year dynamics in Sierra Nevada snowpack levels and their implications for Lake Tahoe's water clarity"
-author: "Emilio Ojemann, Luke Kaminskas, Wyatt Pieretti, Eric Mesropian"
+author: "B. Emilio Ojemann, Luke Kaminskas, Wyatt Pieretti, Eric Mesropian"
 date: "2026-06-01"
 categories: [GIS, Hydrology, Remote Sensing]
 image: ../../images/Tahoe_Project_image.png

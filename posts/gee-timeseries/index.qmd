@@ -1,7 +1,7 @@
 ---
 title: "Land Cover Change Detection Using Landsat Time Series in Google Earth Engine"
 description: "Using Google Earth Engine and Python to analyze land cover change across multiple decade via spectral indices and a time series analysis"
-author: "Emilio Ojemann"
+author: "B. Emilio Ojemann"
 date: "2026-05-15"
 categories: [GIS, Remote Sensing, Python, Google Earth Engine]
 image: ../../images/Lab4_Landsat_Image.png
