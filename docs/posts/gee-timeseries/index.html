@@ -221,14 +221,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="landsat-8" class="level3">
 <h3 class="anchored" data-anchor-id="landsat-8">Landsat 8</h3>
+<div class="columns">
+<div class="column" style="width:60%;">
 <p>Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures <strong>multi-spectral imagery</strong>, meaning it records light in multiple wavelength bands… beyond just visible colors. It captures near-infrared and shortwave infrared bands, and these are what makes advanced vegetation and water analysis possible.</p>
 <p>In this lab I worked with <strong>Landsat 8 Surface Reflectance</strong>, which captures imagery at a 30-meter resolution with a 16-day revisit time.</p>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/download.jpeg" class="img-fluid figure-img"></p>
+<figcaption>Landsat 8 satellite</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="spectral-indices" class="level3">
 <h3 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h3>
 <p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong>, or ratios of specific band combinations that highlight particular environmental features. The index used in this lab was:</p>
-<p><strong>NDVI (Normalized Difference Vegetation Index)</strong> Calculated as <code>(NIR - Red) / (NIR + Red)</code>. Values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
+<p><strong>NDVI (Normalized Difference Vegetation Index)</strong></p>
+<p>Calculated as <code>(NIR - Red) / (NIR + Red)</code>, applying NDVI to image pixels returns values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
 <hr>
 </section>
 <section id="code-walkthrough" class="level3">
