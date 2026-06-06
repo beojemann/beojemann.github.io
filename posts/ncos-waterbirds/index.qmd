@@ -11,7 +11,7 @@ image: ../../images/Devereux-Slough.jpg
 
 ### Overview
 
-The North Campus Open Space (NCOS) is an actively restoring estuary situated directly adjacent to the UC Santa Barbara campus. As a Student Research Lead at the Cheadle Center for Biodiversity and Ecological Restoration, I designed and led my own study investigating the spatial and trophic relationships between local waterbirds and aquatic invertebrates across four habitat zones in the upper arms of the Devereux Slough.
+The North Campus Open Space (NCOS) is an actively restoring coastal wetland managed by the [Cheadle Center for Biodiversity and Ecological Restoration ](https://www.ccber.ucsb.edu) (CCBER), sitting just steps from the UC Santa Barbara campus. The restoration focus centers on the upper arms of Devereux Slough and its surrounding wetland habitats, pictured below. As a Student Research Lead at CCBER, I designed and led a study investigating the spatial and trophic relationships between local waterbirds and their aquatic invertebrate prey across the distinct environments found at NCOS.
 
 ![Photograph: Bill Dewey](../../images/NCOS_SB_Audobon_Society.jpg)
 
@@ -19,13 +19,13 @@ The North Campus Open Space (NCOS) is an actively restoring estuary situated dir
 
 ### The Question
 
-As NCOS continues to restore its historic tidal connectivity and diverse, native habitats, a key ecological management question emerges: how are waterbirds and their invertebrate prey distributed across the wetland, and how do habitat zones influence those patterns? Getting a good understanding of these these linkages can directly inform restoration decisions such as deciding where to prioritize habitat work.
+As NCOS continues to recover its historic tidal and natural connectivity, a key ecological management question emerges: how are waterbirds and their invertebrate prey distributed across the wetland, and how do habitat zones influence those patterns? Getting a good understanding of these relationships can directly inform restoration management such as deciding where to prioritize future habitat work.
 
 ---
 
 ### Methods
 
-To investigate these patterns, I combined monthly waterbird survey data with quarterly aquatic invertebrate sampling across four distinct habitat zones at the Devereux Slough: the **main channel and its mudflats**, the **Phelps Creek confluence**, constructed freshwater **ponds**, and seasonal **vernal pools**. Each zone was ecologically distinct (different salinities, water depths, and vegetation structures) despite being a part of the same restoration site. After linking the invertebrate community in each zone with published waterbird diets, I built trophic networks: visual maps of who is eating what, and where. All spatial analysis and network visualizations were carried out in ArcGIS and R.
+To investigate these patterns, I combined monthly waterbird observation data with quarterly aquatic invertebrate sampling counts across four distinct habitat zones at the Devereux Slough: the main channel and its mudflats, the Phelps Creek confluence, constructed freshwater ponds, and seasonal vernal pools. Each zone was ecologically distinct (different salinities, water depths, and vegetation structures) despite being a part of the same restoration site. I then combined the invertebrate and waterbird communities within each zone with published aquatic diets to build **trophic networks**: visual maps of who is eating what, and where. All spatial analysis and network visualizations were carried out in ArcGIS and R.
 
 ---
 
