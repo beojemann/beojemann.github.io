@@ -1,6 +1,6 @@
 ---
 title: "Tracking Post-Fire Vegetation Recovery with a Landsat time Series"
-description: "Using Google Earth Engine and Python to analyze land cover change across multiple decades via spectral indices and a time series analysis"
+description: "Using Google Earth Engine and Python to analyze vegetation changes due to fire via spectral indices and a time series analysis"
 author: "B. Emilio Ojemann"
 date: "2026-05-15"
 categories: [GIS, Remote Sensing, Python, Google Earth Engine]
