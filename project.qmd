@@ -7,4 +7,4 @@ listing:
   categories: true
 ---
 
-Below is a collection of some academic work and research projects that utilize GIS, remote sensing, and other technical methods for applied hydrology and ecology work. Click on each to learn more. 
+Below is a collection of some academic work and research projects that utilize GIS, remote sensing, and other technical methods for applied environmental work. Click on each to learn more. 
