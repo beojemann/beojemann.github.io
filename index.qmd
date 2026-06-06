@@ -2,7 +2,7 @@
 title: "Ben \"Emilio\" Ojemann"
 image: images/IMG_6773.JPG
 about:
-  template: trestles
+  template: jolla
   links:
     - icon: linkedin
       text: LinkedIn

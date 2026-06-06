@@ -16,11 +16,3 @@ body {
 h1, h2, h3 {
   font-family: 'Playfair Display', serif;
 }
-
-/* Round the profile image on the landing page */
-.about-image {
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  width: 250px !important;
-  height: 250px !important;
-}

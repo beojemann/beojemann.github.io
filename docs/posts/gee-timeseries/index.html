@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-05-15">
 <meta name="description" content="Using Google Earth Engine and Python to analyze land cover change across multiple decades via spectral indices and a time series analysis">
 
-<title>Land Cover Change Detection Using Landsat Time Series in Google Earth Engine – EMILIO</title>
+<title>Tracking Post-Fire Vegetation Recovery with a Landsat time Series – EMILIO</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -167,7 +167,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Land Cover Change Detection Using Landsat Time Series in Google Earth Engine</h1>
+<h1 class="title">Tracking Post-Fire Vegetation Recovery with a Landsat time Series</h1>
   <div class="quarto-categories">
     <div class="quarto-category">GIS</div>
     <div class="quarto-category">Remote Sensing</div>
@@ -209,122 +209,375 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level3">
 <h3 class="anchored" data-anchor-id="overview">Overview</h3>
-<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today, but a time series generates the story of how it got there. In this lab, I used Google Earth Engine (GEE) to analyze land cover change using Landsat imagery and spectral indices. GEE gives you access to decades of various satellite imagery without the user actually downloading a single file.</p>
-<p>The core skill applied here is <strong>time series analysis</strong>. In general terms, this means pulling imagery across many years, calculating an index for each image, and then plotting how that index changed over time. This is the kind of analysis used in real-world environmental work to track all sorts of changes including in: vegetation stress, drought impacts, urban expansion, and water resources.</p>
+<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today, but a time series generates the story of how it got there. In this lab, I used <strong>Google Earth Engine (GEE)</strong>, Landsat 8 imagery, and spectral indices to track vegetation change before and after the 2018 Woolsey Fire in Southern California.</p>
+<p>In November 2018, the Woolsey Fire burned through roughly 97,000 acres across the Los Angeles and Ventura Counties, scorching the Santa Monica Mountains found between Thousand Oaks and Malibu. With a remote sensing background, I know a fire that large will leave a clear and highly-measurable signal in satellite data. The core skill applied here is <strong>time series analysis</strong>: pulling imagery across many dates, calculating a vegetation index for each image, and plotting how that index changes over time… all to track the fire’s impact and the recovery of the landscape.</p>
 <hr>
 </section>
 <section id="what-is-google-earth-engine" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-google-earth-engine">What is Google Earth Engine?</h3>
-<p>Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data means downloading huge files to a hard drive. But GEE prevents this; the user writes code that runs on Google’s servers, right where all of the imagery already lives. As a result, you can analyze decades of global satellite data in mere seconds, and from any computer.</p>
-<p>In this course we used GEE through Python using the <code>geemap</code> library, which lets you write Python code and visualize results as interactive maps inside a Google Jupyter notebook (No extra software needed).</p>
+<p>Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data means downloading huge files to a hard drive and hoping your computer can handle everything. But GEE fixes this: the user writes code that runs on Google’s servers, right where all of the imagery already lives. As a result, you can analyze decades of global satellite data in mere seconds, and from any computer.</p>
+<p>In this lab, I use GEE through Python using the <code>geemap</code> library, which lets you write Python code and visualize results as interactive maps inside a Google Colab notebook (No extra software needed!).</p>
 <hr>
 </section>
-<section id="landsat" class="level3">
-<h3 class="anchored" data-anchor-id="landsat">Landsat</h3>
-<p>Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures multi-spectral imagery, meaning it records light in multiple wavelength bands… beyond just visible color. It includes near-infrared and shortwave infrared bands, and this is how scientists analyze vegetation and water.</p>
-<p>In this lab I worked with <strong>Landsat 8</strong>, which captures imagery at a 30-meter resolution with a 16-day revisit time.</p>
+<section id="landsat-8" class="level3">
+<h3 class="anchored" data-anchor-id="landsat-8">Landsat 8</h3>
+<p>Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures <strong>multi-spectral imagery</strong>, meaning it records light in multiple wavelength bands… beyond just visible colors. It captures near-infrared and shortwave infrared bands, and these are what makes advanced vegetation and water analysis possible.</p>
+<p>In this lab I worked with <strong>Landsat 8 Surface Reflectance</strong>, which captures imagery at a 30-meter resolution with a 16-day revisit time.</p>
 <hr>
 </section>
 <section id="spectral-indices" class="level3">
 <h3 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h3>
-<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong> - ratios of specific band combinations that highlight certain environmental features. Two indices were used in this lab:</p>
+<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong>, or ratios of specific band combinations that highlight particular environmental features. The index used in this lab was:</p>
 <p><strong>NDVI (Normalized Difference Vegetation Index)</strong> Calculated as <code>(NIR - Red) / (NIR + Red)</code>. Values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
-<p><strong>NDWI (Normalized Difference Water Index)</strong> Calculated as <code>(Green - NIR) / (Green + NIR)</code>. Highlights water bodies and vegetation water content. Positive values indicate open water or moisture-stressed vegetation.</p>
 <hr>
 </section>
 <section id="code-walkthrough" class="level3">
 <h3 class="anchored" data-anchor-id="code-walkthrough">Code Walkthrough</h3>
 <p>Here is the core workflow from the lab. Each step is annotated to explain what it does.</p>
-<p><strong>Step 1: Authenticate and initialize Google Earth Engine</strong></p>
+<section id="step-1-setup-and-processing" class="level5">
+<h5 class="anchored" data-anchor-id="step-1-setup-and-processing">Step 1: Setup and Processing</h5>
+<p>Before calculating anything, raw Landsat imagery needs to be cleaned. Clouds, cloud shadows, and saturated pixels all introduce “noise” that would would impede analysis. I wrote a preprocessing function that applies quality assurance masks and scaling factors to every image in the collection automatically. Finally, I filtered the data to <strong>2018 and 2019</strong> to capture pre-fire and post-fire conditions.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ee</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Authenticate your Google account to access GEE</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ee.Authenticate()</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Earth Engine API</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ee.Initialize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Step 2: Define the study area</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a point of interest - GEE will center the analysis here</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Coordinates are longitude, latitude</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> ee.Geometry.Point([<span class="op">-</span><span class="fl">119.5</span>, <span class="fl">37.5</span>])</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Buffer the point to create a region of interest (50km radius)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>roi <span class="op">=</span> point.<span class="bu">buffer</span>(<span class="dv">50000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Step 3: Load and filter the Landsat 8 image collection</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Landsat 8 Surface Reflectance collection</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Surface Reflectance means atmospheric correction has already been applied</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>landsat <span class="op">=</span> ee.ImageCollection(<span class="st">'LANDSAT/LC08/C02/T1_L2'</span>) <span class="op">\</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .filterBounds(roi) \           <span class="co"># Only images that overlap our region</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .filterDate(<span class="st">'2014-01-01'</span>, <span class="st">'2023-12-31'</span>) \  <span class="co"># Date range: 2014-2023</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(ee.Filter.lt(<span class="st">'CLOUD_COVER'</span>, <span class="dv">20</span>))   <span class="co"># Less than 20% cloud cover</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Step 4: Calculate NDVI for each image</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to calculate NDVI and add it as a new band</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndvi(image):</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Select NIR (Band 5) and Red (Band 4) from Landsat 8</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    nir <span class="op">=</span> image.select(<span class="st">'SR_B5'</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    red <span class="op">=</span> image.select(<span class="st">'SR_B4'</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate NDVI using the normalizedDifference method</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ndvi <span class="op">=</span> image.normalizedDifference([<span class="st">'SR_B5'</span>, <span class="st">'SR_B4'</span>]).rename(<span class="st">'NDVI'</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add NDVI as a new band to the image and return</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image.addBands(ndvi)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the function to every image in the collection using .map()</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>landsat_ndvi <span class="op">=</span> landsat.<span class="bu">map</span>(calculate_ndvi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Step 5: Extract time series and plot</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a chart of mean NDVI over time within the region of interest</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap.chart <span class="im">as</span> chart</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce each image to a single mean NDVI value for the ROI</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>timeseries <span class="op">=</span> landsat_ndvi.select(<span class="st">'NDVI'</span>).<span class="bu">map</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> img: img.reduceRegion(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        reducer<span class="op">=</span>ee.Reducer.mean(),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        geometry<span class="op">=</span>roi,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span><span class="dv">30</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the time series</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>chart.image_series(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    image_collection<span class="op">=</span>landsat_ndvi,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    region<span class="op">=</span>roi,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span>ee.Reducer.mean(),</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">30</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    x_property<span class="op">=</span><span class="st">'system:time_start'</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    y_property<span class="op">=</span><span class="st">'NDVI'</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Step 6: Visualize on an interactive map</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an interactive map centered on our region</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Map <span class="op">=</span> geemap.Map()</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Map.centerObject(roi, zoom<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define visualization parameters for NDVI</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Green palette: low NDVI = white/yellow, high NDVI = dark green</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ndvi_vis <span class="op">=</span> {</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'min'</span>: <span class="op">-</span><span class="fl">0.2</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max'</span>: <span class="fl">0.8</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'palette'</span>: [<span class="st">'white'</span>, <span class="st">'yellow'</span>, <span class="st">'green'</span>, <span class="st">'darkgreen'</span>]</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a single year's NDVI composite to the map</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ndvi_2023 <span class="op">=</span> landsat_ndvi <span class="op">\</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    .filterDate(<span class="st">'2023-06-01'</span>, <span class="st">'2023-09-01'</span>) <span class="op">\</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    .median() <span class="op">\</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">'NDVI'</span>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>Map.addLayer(ndvi_2023, ndvi_vis, <span class="st">'NDVI 2023'</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>Map.addLayerControl()</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>Map</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Authenticate your Google account to access GEE</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ee.Authenticate()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize with your project</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ee.Initialize(project <span class="op">=</span> <span class="st">"geog115c-spring2026"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Mount Google Drive for saving figures</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/drive'</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>out_dir <span class="op">=</span> Path(<span class="st">'/content/drive/MyDrive/GEOG 115C'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>out_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Landsat 8 surface reflectance imagery for all of 2018 and 2019</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install geemap</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> ee.ImageCollection(<span class="st">'LANDSAT/LC08/C02/T1_L2'</span>).filterDate(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'2018-01-01'</span>, <span class="st">'2019-12-31'</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Preprocessing function: masks bad pixels and applies scaling factors</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocess_landsat8(image):</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># QA masks</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    qa_mask <span class="op">=</span> image.select(<span class="st">'QA_PIXEL'</span>).bitwiseAnd(<span class="bu">int</span>(<span class="st">'11111'</span>, <span class="dv">2</span>)).eq(<span class="dv">0</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Each 1 in the above line corresponds to each bitmask value (i.e., Fill,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Dilated Cloud, Cirrius (high confidence), Cloud, and Cloud Shadow). The 2</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># tells us to interpret this as a base-2 (binary) number. The eq(0) indicates</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we only want to include the highest value data (i.e., where those bitmask</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># values are equal to 0; eq(1) would indicate the poor quality data. In doing this,</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># eq(0) ensures we only keep pixels where NONE of these flags are noted).</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    saturation_mask <span class="op">=</span> image.select(<span class="st">'QA_RADSAT'</span>).eq(<span class="dv">0</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply scaling factors to raw DN</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    optical <span class="op">=</span> image.select(<span class="st">'SR_B.*'</span>).multiply(<span class="fl">0.0000275</span>).add(<span class="op">-</span><span class="fl">0.2</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    thermal <span class="op">=</span> image.select(<span class="st">'ST_B.*'</span>).multiply(<span class="fl">0.00341802</span>).add(<span class="fl">149.0</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        image</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>        .addBands(optical, <span class="va">None</span>, <span class="va">True</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>        .addBands(thermal, <span class="va">None</span>, <span class="va">True</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        .updateMask(qa_mask)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        .updateMask(saturation_mask)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>visualization <span class="op">=</span> {</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bands'</span>: [<span class="st">'SR_B4'</span>, <span class="st">'SR_B3'</span>, <span class="st">'SR_B2'</span>],</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">'min'</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max'</span>: <span class="fl">0.3</span>,</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply preprocessing to every image in the collection</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> dataset.<span class="bu">map</span>(preprocess_landsat8)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize as a true color composite to confirm data loaded correctly</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> geemap.Map()</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>m.set_center(<span class="op">-</span><span class="fl">114.2579</span>, <span class="fl">38.9275</span>, <span class="dv">8</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>m.add_layer(image, visualization, <span class="st">'True Color'</span>)</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>m</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/Preprocess_Landsat8.png" class="img-fluid figure-img"></p>
+<figcaption>Preprocessed Landsat 8 true color imagery loaded in GEE</figcaption>
+</figure>
+</div>
 <hr>
 </section>
-<section id="what-the-results-show" class="level3">
-<h3 class="anchored" data-anchor-id="what-the-results-show">What the Results Show</h3>
-<p>The time series plot reveals clear seasonal patterns in NDVI. Values tend to peak each summer as vegetation becomes more and more green, then drop through the fall and winter. Across the time series, you can start to see some inter-annual variation: during drought years summer peaks are suppressed, while wet years have peaks showing earlier and have stronger greening. This is what hydrologists and ecologists like to use when tracking environmental responses to climate change.</p>
+<section id="step-2-define-the-study-area" class="level5">
+<h5 class="anchored" data-anchor-id="step-2-define-the-study-area">Step 2: Define the study area</h5>
+<p>Rather than spending an hour to delineate a study area by hand, I loaded a publicly available <strong>Woolsey Fire boundary</strong> as a GeoJSON file from CAL FIRE. A GeoJSON is a standard file format that geographers use to store vectors (points, lines, polygons) as plain text that both humans and code can read.</p>
+<p>I used the <code>geopandas</code> library to read the file and <code>geemap</code> library to convert it into a GEE geometry object. From there, I was able to clip all of the analysis to only the burned area.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Path to the Woolsey Fire GeoJSON stored in Google Drive</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>geojson_path <span class="op">=</span> <span class="st">'/content/drive/My Drive/Colab Notebooks/Geog115c_2026/geojsons/'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>geojson <span class="op">=</span> geojson_path <span class="op">+</span> <span class="st">'Woolsey_Fire.geojson'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the GeoJSON into a spatial dataframe</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>WoolseyFire_Perimeter <span class="op">=</span> gpd.read_file(geojson)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a GEE feature so we can use it</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>WoolseyFire_Perimeter_gee <span class="op">=</span> geemap.geopandas_to_ee(WoolseyFire_Perimeter)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract just the perimeter for clipping and analysis</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>woolsey_geom <span class="op">=</span> WoolseyFire_Perimeter_gee.geometry()</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the fire perimeter on a map</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="bu">map</span> <span class="op">=</span> geemap.Map()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">map</span>.addLayer(woolsey_geom, {}, <span class="st">'Woolsey Fire Perimeter'</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">map</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/Woolsey_Fire_Perim.png" class="img-fluid figure-img"></p>
+<figcaption>Woolsey Fire perimeter loaded into GEE</figcaption>
+</figure>
+</div>
 <hr>
+</section>
+<section id="step-3-calculating-ndvi-and-building-time-series" class="level5">
+<h5 class="anchored" data-anchor-id="step-3-calculating-ndvi-and-building-time-series">Step 3: Calculating NDVI and building time series</h5>
+<p>Now that the study area is defined, I moved on to calculate NDVI for every image in the collection and tracking how it changed over time within the burned area. The function <code>compute_timeseries</code> does a lot of the work here. For every image, it calculates the mean NDVI across all pixels within the fire perimeter, and stores that value along with the image’s date… a time series! The result is a table of NDVI values paired with timestamps, called a feature collection. The visual here is a <em>median</em> composite image, confirming our NDVI function worked.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining an NDVI calculation function</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_ndvi(image):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculates NDVI from Landsat 8 SR bands and returns image with NDVI as</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># another band</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># NIR = SR_B5 and Red = SR_B4</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    ndvi <span class="op">=</span> image.normalizedDifference([<span class="st">'SR_B5'</span>, <span class="st">'SR_B4'</span>]).rename(<span class="st">"NDVI"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image.addBands(ndvi)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing function on median image composite</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>median_image <span class="op">=</span> image.median()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>median_ndvi <span class="op">=</span> calc_ndvi(median_image)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Median Image and Bands:"</span>, median_ndvi.bandNames().getInfo())</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing the median NDVI image</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>ndvi_vis <span class="op">=</span> {</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bands"</span>: [<span class="st">"NDVI"</span>],</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"min"</span>: <span class="op">-</span><span class="fl">0.2</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max"</span>: <span class="fl">0.8</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"palette"</span>: [<span class="st">"red"</span>, <span class="st">"yellow"</span>, <span class="st">"green"</span>]</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> geemap.Map()</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>m2.set_center(<span class="op">-</span><span class="dv">118</span>, <span class="dv">34</span>, <span class="dv">9</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>m2.add_layer(median_ndvi, ndvi_vis, <span class="st">"Median NDVI"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>m2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/NDVI_median_image.png" class="img-fluid figure-img"></p>
+<figcaption>NDVI median composite across Southern California. Green is healthy vegetation, red and orange are bare or stressed areas.</figcaption>
+</figure>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply NDVI calculation to the entire image collection</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ndvi_collection <span class="op">=</span> image.<span class="bu">map</span>(calc_ndvi)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># compute_timeseries maps over each image independently, then uses reduceRegion</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># to calculate mean NDVI within the ROI for that specific image, saving both</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the NDVI and image time values in an ee.Feature. The ee.FeatureCollection</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># can then be used for a timeseries because it contains the date of each image.</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_timeseries(ImageCollection, region):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> per_image(img):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        mean_dict <span class="op">=</span> img.reduceRegion(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            reducer<span class="op">=</span>ee.Reducer.mean(),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            geometry<span class="op">=</span>region,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            scale<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            bestEffort<span class="op">=</span><span class="va">True</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ee.Feature(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="va">None</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                <span class="st">'NDVI'</span>: mean_dict.get(<span class="st">'NDVI'</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">'time'</span>: img.date().millis()</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ee.FeatureCollection(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        ImageCollection.filterBounds(region).<span class="bu">map</span>(per_image)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Calling compute_timeseries for the Woolsey Fire perimeter</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>woolsey_timeseries <span class="op">=</span> compute_timeseries(ndvi_collection, woolsey_geom)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting to a useable dataframe</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>woolsey_df <span class="op">=</span> geemap.ee_to_df(woolsey_timeseries)[[<span class="st">"NDVI"</span>, <span class="st">"time"</span>]]</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(woolsey_df.head())</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Rows: </span><span class="sc">{</span><span class="bu">len</span>(woolsey_df)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="step-4-analysis-and-visualization" class="level5">
+<h5 class="anchored" data-anchor-id="step-4-analysis-and-visualization">Step 4: Analysis and Visualization</h5>
+<p>With the data in a pandas DataFrame, it was time to plot the time series.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting time column to datetime</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># "time" was stored in milliseconds, therefore unit = "ms"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>woolsey_df[<span class="st">"time"</span>] <span class="op">=</span> pd.to_datetime(woolsey_df[<span class="st">"time"</span>], unit <span class="op">=</span> <span class="st">"ms"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop rows missing NDVI</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>woolsey_df <span class="op">=</span> woolsey_df.dropna(subset <span class="op">=</span> [<span class="st">"NDVI"</span>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort values by time</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>woolsey_df <span class="op">=</span> woolsey_df.sort_values(<span class="st">"time"</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting NDVI v. time</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">'time'</span>],</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">'NDVI'</span>],</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'green'</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">'Fire Scar as NDVI'</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Date'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'NDVI'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'NDVI over Time in the Woolsey Fire Perimeter (2018-2019)'</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter(<span class="st">'%b %Y'</span>))</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/NDVI_over_Time.png" class="img-fluid figure-img"></p>
+<figcaption>Raw NDVI time series within the Woolsey Fire perimeter</figcaption>
+</figure>
+</div>
+<p>As you can see, the fire shows up clearly. NDVI inside the perimeter drops sharply in late 2018, then slowly starts climbing back through 2019 as vegetation starts to recover.</p>
+<p>To give that drop some more context, I added a second time series from a nearby unburned area in the Santa Monica Mountains as a baseline to compare. If the fire caused a real change in vegetation, and not just normal seasonal variation, the two lines should dramatically diverge after the November 2018 date.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining a baseline geometry (unburned area in the Santa Monica Mtns)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>baseline_geom <span class="op">=</span> ee.Geometry.BBox(<span class="op">-</span><span class="fl">118.5</span>, <span class="fl">34.05</span>, <span class="op">-</span><span class="fl">118.35</span>, <span class="fl">34.15</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the NDVI timeseries for the baseline region</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>baseline_timeseries <span class="op">=</span> compute_timeseries(ndvi_collection, baseline_geom)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to dataframe and clean</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>baseline_df <span class="op">=</span> geemap.ee_to_df(baseline_timeseries)[[<span class="st">"NDVI"</span>, <span class="st">"time"</span>]]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>baseline_df[<span class="st">"time"</span>] <span class="op">=</span> pd.to_datetime(baseline_df[<span class="st">"time"</span>], unit<span class="op">=</span><span class="st">"ms"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>baseline_df <span class="op">=</span> baseline_df.dropna(subset<span class="op">=</span>[<span class="st">"NDVI"</span>])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>baseline_df <span class="op">=</span> baseline_df.sort_values(<span class="st">"time"</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting both timeseries together</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">"time"</span>],</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">"NDVI"</span>],</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="dv">25</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Woolsey Fire Scar"</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"time"</span>],</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"NDVI"</span>],</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="dv">18</span>,</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="st">'Unburned baseline'</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Date"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"NDVI"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Woolsey Fire Scar vs. Unburned Baseline NDVI Timeseries (2018-2019)"</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>             fontsize <span class="op">=</span> <span class="dv">13</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize <span class="op">=</span> <span class="dv">11</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter(<span class="st">'%b %Y'</span>))</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/Scar_Unburned_NDVI_Timeseries.png" class="img-fluid figure-img"></p>
+<figcaption>Fire scar vs.&nbsp;unburned baseline NDVI. The divergence after November 2018 is clear.</figcaption>
+</figure>
+</div>
+<p>Before the Woolsey fire, both areas track each other pretty closely through the year. After the fire, the burned area drops hard while the unburned baseline just keeps doing its thing. There are significant vegetation impacts from the fire.</p>
+<hr>
+</section>
+<section id="step-5-lowess-smoothing" class="level5">
+<h5 class="anchored" data-anchor-id="step-5-lowess-smoothing">Step 5: LOWESS smoothing</h5>
+<p>Even with clean data, individual satellite images can still be thrown off by leftover haze, thin clouds, or other atmospheric noise. These show up as random spikes or dips in the scatter plot. To smooth them out, and without losing the raw data, I applied a technique called LOWESS (Locally Weighted Scatterplot Smoothing). It is essentially just drawing a best-fit line through the data, but not just one straight line across everything, the algorithm fits a bunch of smaller, local curves that follow the shape of the data more naturally. The <code>frac</code> parameter controls how tight those local fits are. Here, I used 0.15, meaning each smoothed point considers 15% of the surrounding data when fitting its curve.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying temporal smoothing</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Import LOWESS smoothing function</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.nonparametric.smoothers_lowess <span class="im">import</span> lowess</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lowess_smooth(df, var, frac<span class="op">=</span><span class="fl">0.15</span>):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    smoothed <span class="op">=</span> lowess(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        endog<span class="op">=</span>df[var],</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        exog<span class="op">=</span>df[<span class="st">'time'</span>].astype(<span class="st">'int64'</span>),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        frac<span class="op">=</span>frac,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        return_sorted<span class="op">=</span><span class="va">False</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> smoothed</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying the smoothing to create new columns in each dataframe</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># (creating a smoothed NDVI timeseries)</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>woolsey_df[<span class="st">"NDVI_smooth"</span>] <span class="op">=</span> lowess_smooth(woolsey_df, <span class="st">"NDVI"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>baseline_df[<span class="st">"NDVI_smooth"</span>] <span class="op">=</span> lowess_smooth(baseline_df, <span class="st">"NDVI"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize <span class="op">=</span> (<span class="dv">13</span>, <span class="dv">6</span>))</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Raw data = points</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">"time"</span>],  woolsey_df[<span class="st">"NDVI"</span>],</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="dv">19</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="st">"Fire Scar (raw)"</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"time"</span>],</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"NDVI"</span>],</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="dv">19</span>,</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="st">"Baseline (raw)"</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Smoothed = lines</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>ax.plot(</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">'time'</span>],</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    woolsey_df[<span class="st">'NDVI_smooth'</span>],</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    linewidth <span class="op">=</span> <span class="fl">2.5</span>,</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="st">"Fire Scar (LOWESS)"</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>ax.plot(</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"time"</span>],</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    baseline_df[<span class="st">"NDVI_smooth"</span>],</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    linewidth <span class="op">=</span> <span class="fl">2.5</span>,</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="st">"Baseline (LOWESS)"</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Date"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"NDVI"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>ax.set_title(</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NDVI Timeseries with LOWESS Smoothing:</span><span class="ch">\n</span><span class="st">Woolsey Fire Scar vs. Unburned Baseline (2018-2019)"</span>,</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    fontsize <span class="op">=</span> <span class="dv">14</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Legend and labels</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter(<span class="st">'%b %Y'</span>))</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation <span class="op">=</span> <span class="dv">45</span>)</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/LOWESS_smooth.png" class="img-fluid figure-img"></p>
+<figcaption>NDVI time series with LOWESS smoothing applied. Fire scar in red, unburned baseline in blue.</figcaption>
+</figure>
+</div>
+<p>As you can see, the smoothed curves make the story easy to read. The fire scar NDVI abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. That unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, not just a normal part of the season.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
