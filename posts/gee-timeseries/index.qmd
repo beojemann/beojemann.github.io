@@ -398,4 +398,4 @@ plt.show()
 
 ![NDVI time series with LOWESS smoothing applied. Fire scar in red, unburned baseline in blue.](../../images/LOWESS_smooth.png)
 
-As you can see, the smoothed curves make the story easy to read. The NDVI for the Fire Scare abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. The blue unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, and not a normal part of the season.
+As you can see, the smoothed curves make the story easy to read. The NDVI for the Fire Scar abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. The blue unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, and not a normal part of the season.
