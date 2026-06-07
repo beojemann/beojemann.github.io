@@ -9,15 +9,15 @@ image: ../../images/Lab4_Landsat_Image.png
 
 ### Overview
 
-One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today, but a time series generates the story of how it got there. In this lab, I used **Google Earth Engine (GEE)**, Landsat 8 imagery, and spectral indices to track vegetation change before and after the 2018 Woolsey Fire in Southern California.
+One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. While one single image can tell you what an area looks like today, a time series writes the story of how it got there. In this lab, I used **Google Earth Engine (GEE)**, Landsat 8 imagery, and spectral indices to track vegetation change before and after the **2018 Woolsey Fire** in Southern California.
 
-In November 2018, the Woolsey Fire burned through roughly 97,000 acres across the Los Angeles and Ventura Counties, scorching the Santa Monica Mountains found between Thousand Oaks and Malibu. With a remote sensing background, I know a fire that large will leave a clear and highly-measurable signal in satellite data. The core skill applied here is **time series analysis**: pulling imagery across many dates, calculating a vegetation index for each image, and plotting how that index changes over time... all to track the fire's impact and the recovery of the landscape.
+In November 2018, the Woolsey Fire burned roughly 97,000 acres across the Los Angeles and Ventura Counties, scorching the Santa Monica Mountains found between Thousand Oaks and Malibu. With a remote sensing background, I know a fire that large will leave a clear and highly-measurable signal in satellite data. The technique applied here is a **time series analysis**: pulling imagery across many dates, calculating a vegetation index for each image, and plotting how that index changes over time... all to track the fire's impact and the recovery of the landscape.
 
 ---
 
 ### What is Google Earth Engine?
 
-Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data means downloading huge files to a hard drive and hoping your computer can handle everything. But GEE fixes this: the user writes code that runs on Google's servers, right where all of the imagery already lives. As a result, you can analyze decades of global satellite data in mere seconds, and from any computer.
+Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data involves downloading many large files to a hard drive and hoping your computer can handle everything. But GEE fixes this: the user writes code that runs on Google's servers, right where all of the imagery already lives. As a result, you can access and analyze decades of global satellite data in mere seconds, from any computer.
 
 In this lab, I use GEE through Python using the `geemap` library, which lets you write Python code and visualize results as interactive maps inside a Google Colab notebook (No extra software needed!).
 
@@ -27,7 +27,7 @@ In this lab, I use GEE through Python using the `geemap` library, which lets you
 
 :::: {.columns}
 ::: {.column width="60%"}
-Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth's surface since 1972. This makes it the longest continuous space-based record of Earth's land surface ever. Each satellite captures **multi-spectral imagery**, meaning it records light in multiple wavelength bands... beyond just visible colors. It captures near-infrared and shortwave infrared bands, and these are what makes advanced vegetation and water analysis possible.
+Landsat is a joint NASA/USGS satellite program that has been consistently imaging Earth's surface since 1972. This makes it the longest continuous space-based record of Earth's land surface ever. Each satellite captures **multi-spectral imagery**, meaning it records light in multiple wavelength bands... beyond just visible colors. It captures near-infrared (NIR) and shortwave infrared (SWIR) bands, and these are what makes advanced vegetation and water analysis possible.
 
 In this lab I worked with **Landsat 8 Surface Reflectance**, which captures imagery at a 30-meter resolution with a 16-day revisit time.
 :::
@@ -40,21 +40,21 @@ In this lab I worked with **Landsat 8 Surface Reflectance**, which captures imag
 
 ### Spectral Indices
 
-Rather than analyzing raw band values, remote sensing scientists calculate **spectral indices**, or ratios of specific band combinations that highlight particular environmental features. The index used in this lab was:
+Rather than analyzing raw band values, remote sensing scientists calculate ratios of specific band combinations called spectral indices to highlight particular environmental features. The index used in this lab was:
 
 **NDVI (Normalized Difference Vegetation Index)**
 
-Calculated as `(NIR - Red) / (NIR + Red)`, applying NDVI to image pixels returns values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.
+Calculated as the band ratio `(NIR - Red) / (NIR + Red)`, applying NDVI to image pixels returns values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.
 
 ---
 
 ### Code Walkthrough
 
-Here is the core workflow from the lab. Each step is annotated to explain what it does.
+Here is the workflow from the lab. Each step is annotated to explain what it does.
 
 ##### Step 1: Setup and Processing
 
-Before calculating anything, raw Landsat imagery needs to be cleaned. Clouds, cloud shadows, and saturated pixels all introduce "noise" that would would impede analysis. I wrote a preprocessing function that applies quality assurance masks and scaling factors to every image in the collection automatically. Finally, I filtered the data to **2018 and 2019** to capture pre-fire and post-fire conditions.
+Before calculating anything, raw Landsat imagery needs to be cleaned. Clouds, cloud shadows, and saturated pixels all introduce "noise" that would would impede analysis. I wrote a preprocessing function that applies **quality assurance masks** and **scaling factors** to every image in the collection automatically. Finally, I filtered the data to **2018 and 2019** to capture pre-fire and post-fire conditions.
 
 ```python
 import ee
@@ -126,7 +126,7 @@ m
 
 ##### Step 2: Define the study area
 
-Rather than spending an hour to delineate a study area by hand, I loaded a publicly available **Woolsey Fire boundary** as a GeoJSON file from CAL FIRE. A GeoJSON is a standard file format that geographers use to store vectors (points, lines, polygons) as plain text that both humans and code can read.
+Rather than spending an hour to delineate a study area by hand, I loaded a publicly available Woolsey Fire boundary as a **GeoJSON** file from [CAL FIRE](https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=38.012055%2C-118.825081%2C7){target="_blank"}. A GeoJSON is a standard file format that geographers use to store vectors (points, lines, polygons) as plain text that both humans and code can read.
 
 I used the `geopandas` library to read the file and `geemap` library to convert it into a GEE geometry object. From there, I was able to clip all of the analysis to only the burned area.
 
@@ -158,7 +158,7 @@ map
 
 ##### Step 3: Calculating NDVI and building time series
 
-Now that the study area is defined, I moved on to calculate NDVI for every image in the collection and tracking how it changed over time within the burned area. The function `compute_timeseries` does a lot of the work here. For every image, it calculates the mean NDVI across all pixels within the fire perimeter, and stores that value along with the image's date... a time series! The result is a table of NDVI values paired with timestamps, called a feature collection. The visual here is a *median* composite image, confirming our NDVI function worked.
+Now that the study area is defined, I moved on to calculating NDVI for every image in the collection and track how it changed over time within the burned area. The function `compute_timeseries` does a lot of the work here. For every image, it calculates the mean NDVI across all pixels within the fire perimeter, and stores that value along with the image's date... a time series! The result is a table of NDVI values paired with timestamps, called a feature collection. The visual here is a *median* composite image, confirming our NDVI function worked.
 
 ```python
 # Defining an NDVI calculation function

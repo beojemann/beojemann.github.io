@@ -209,13 +209,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level3">
 <h3 class="anchored" data-anchor-id="overview">Overview</h3>
-<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. One single image tells you what an area looks like today, but a time series generates the story of how it got there. In this lab, I used <strong>Google Earth Engine (GEE)</strong>, Landsat 8 imagery, and spectral indices to track vegetation change before and after the 2018 Woolsey Fire in Southern California.</p>
-<p>In November 2018, the Woolsey Fire burned through roughly 97,000 acres across the Los Angeles and Ventura Counties, scorching the Santa Monica Mountains found between Thousand Oaks and Malibu. With a remote sensing background, I know a fire that large will leave a clear and highly-measurable signal in satellite data. The core skill applied here is <strong>time series analysis</strong>: pulling imagery across many dates, calculating a vegetation index for each image, and plotting how that index changes over time… all to track the fire’s impact and the recovery of the landscape.</p>
+<p>One of the most powerful uses of satellite remote sensing is detecting how land cover changes over long periods time. While one single image can tell you what an area looks like today, a time series writes the story of how it got there. In this lab, I used <strong>Google Earth Engine (GEE)</strong>, Landsat 8 imagery, and spectral indices to track vegetation change before and after the <strong>2018 Woolsey Fire</strong> in Southern California.</p>
+<p>In November 2018, the Woolsey Fire burned roughly 97,000 acres across the Los Angeles and Ventura Counties, scorching the Santa Monica Mountains found between Thousand Oaks and Malibu. With a remote sensing background, I know a fire that large will leave a clear and highly-measurable signal in satellite data. The technique applied here is a <strong>time series analysis</strong>: pulling imagery across many dates, calculating a vegetation index for each image, and plotting how that index changes over time… all to track the fire’s impact and the recovery of the landscape.</p>
 <hr>
 </section>
 <section id="what-is-google-earth-engine" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-google-earth-engine">What is Google Earth Engine?</h3>
-<p>Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data means downloading huge files to a hard drive and hoping your computer can handle everything. But GEE fixes this: the user writes code that runs on Google’s servers, right where all of the imagery already lives. As a result, you can analyze decades of global satellite data in mere seconds, and from any computer.</p>
+<p>Google Earth Engine is a free, cloud-based platform created specifically for analyzing satellite imagery. Normally, working with this kind of data involves downloading many large files to a hard drive and hoping your computer can handle everything. But GEE fixes this: the user writes code that runs on Google’s servers, right where all of the imagery already lives. As a result, you can access and analyze decades of global satellite data in mere seconds, from any computer.</p>
 <p>In this lab, I use GEE through Python using the <code>geemap</code> library, which lets you write Python code and visualize results as interactive maps inside a Google Colab notebook (No extra software needed!).</p>
 <hr>
 </section>
@@ -223,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="landsat-8">Landsat 8</h3>
 <div class="columns">
 <div class="column" style="width:60%;">
-<p>Landsat is a joint NASA/USGS satellite program that has been continuously imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures <strong>multi-spectral imagery</strong>, meaning it records light in multiple wavelength bands… beyond just visible colors. It captures near-infrared and shortwave infrared bands, and these are what makes advanced vegetation and water analysis possible.</p>
+<p>Landsat is a joint NASA/USGS satellite program that has been consistently imaging Earth’s surface since 1972. This makes it the longest continuous space-based record of Earth’s land surface ever. Each satellite captures <strong>multi-spectral imagery</strong>, meaning it records light in multiple wavelength bands… beyond just visible colors. It captures near-infrared (NIR) and shortwave infrared (SWIR) bands, and these are what makes advanced vegetation and water analysis possible.</p>
 <p>In this lab I worked with <strong>Landsat 8 Surface Reflectance</strong>, which captures imagery at a 30-meter resolution with a 16-day revisit time.</p>
 </div><div class="column" style="width:40%;">
 <div class="quarto-figure quarto-figure-center">
@@ -238,17 +238,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="spectral-indices" class="level3">
 <h3 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h3>
-<p>Rather than analyzing raw band values, remote sensing scientists calculate <strong>spectral indices</strong>, or ratios of specific band combinations that highlight particular environmental features. The index used in this lab was:</p>
+<p>Rather than analyzing raw band values, remote sensing scientists calculate ratios of specific band combinations called spectral indices to highlight particular environmental features. The index used in this lab was:</p>
 <p><strong>NDVI (Normalized Difference Vegetation Index)</strong></p>
-<p>Calculated as <code>(NIR - Red) / (NIR + Red)</code>, applying NDVI to image pixels returns values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
+<p>Calculated as the band ratio <code>(NIR - Red) / (NIR + Red)</code>, applying NDVI to image pixels returns values range from -1 to 1. Healthy green vegetation reflects strongly in near-infrared and absorbs red light, producing high positive values. Bare soil, water, and developed areas produce values near zero or negative.</p>
 <hr>
 </section>
 <section id="code-walkthrough" class="level3">
 <h3 class="anchored" data-anchor-id="code-walkthrough">Code Walkthrough</h3>
-<p>Here is the core workflow from the lab. Each step is annotated to explain what it does.</p>
+<p>Here is the workflow from the lab. Each step is annotated to explain what it does.</p>
 <section id="step-1-setup-and-processing" class="level5">
 <h5 class="anchored" data-anchor-id="step-1-setup-and-processing">Step 1: Setup and Processing</h5>
-<p>Before calculating anything, raw Landsat imagery needs to be cleaned. Clouds, cloud shadows, and saturated pixels all introduce “noise” that would would impede analysis. I wrote a preprocessing function that applies quality assurance masks and scaling factors to every image in the collection automatically. Finally, I filtered the data to <strong>2018 and 2019</strong> to capture pre-fire and post-fire conditions.</p>
+<p>Before calculating anything, raw Landsat imagery needs to be cleaned. Clouds, cloud shadows, and saturated pixels all introduce “noise” that would would impede analysis. I wrote a preprocessing function that applies <strong>quality assurance masks</strong> and <strong>scaling factors</strong> to every image in the collection automatically. Finally, I filtered the data to <strong>2018 and 2019</strong> to capture pre-fire and post-fire conditions.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ee</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Authenticate your Google account to access GEE</span></span>
@@ -320,7 +320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-2-define-the-study-area" class="level5">
 <h5 class="anchored" data-anchor-id="step-2-define-the-study-area">Step 2: Define the study area</h5>
-<p>Rather than spending an hour to delineate a study area by hand, I loaded a publicly available <strong>Woolsey Fire boundary</strong> as a GeoJSON file from CAL FIRE. A GeoJSON is a standard file format that geographers use to store vectors (points, lines, polygons) as plain text that both humans and code can read.</p>
+<p>Rather than spending an hour to delineate a study area by hand, I loaded a publicly available Woolsey Fire boundary as a <strong>GeoJSON</strong> file from <a href="https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=38.012055%2C-118.825081%2C7" target="_blank">CAL FIRE</a>. A GeoJSON is a standard file format that geographers use to store vectors (points, lines, polygons) as plain text that both humans and code can read.</p>
 <p>I used the <code>geopandas</code> library to read the file and <code>geemap</code> library to convert it into a GEE geometry object. From there, I was able to clip all of the analysis to only the burned area.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -351,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-3-calculating-ndvi-and-building-time-series" class="level5">
 <h5 class="anchored" data-anchor-id="step-3-calculating-ndvi-and-building-time-series">Step 3: Calculating NDVI and building time series</h5>
-<p>Now that the study area is defined, I moved on to calculate NDVI for every image in the collection and tracking how it changed over time within the burned area. The function <code>compute_timeseries</code> does a lot of the work here. For every image, it calculates the mean NDVI across all pixels within the fire perimeter, and stores that value along with the image’s date… a time series! The result is a table of NDVI values paired with timestamps, called a feature collection. The visual here is a <em>median</em> composite image, confirming our NDVI function worked.</p>
+<p>Now that the study area is defined, I moved on to calculating NDVI for every image in the collection and track how it changed over time within the burned area. The function <code>compute_timeseries</code> does a lot of the work here. For every image, it calculates the mean NDVI across all pixels within the fire perimeter, and stores that value along with the image’s date… a time series! The result is a table of NDVI values paired with timestamps, called a feature collection. The visual here is a <em>median</em> composite image, confirming our NDVI function worked.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining an NDVI calculation function</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_ndvi(image):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculates NDVI from Landsat 8 SR bands and returns image with NDVI as</span></span>
