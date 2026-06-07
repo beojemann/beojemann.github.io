@@ -273,7 +273,7 @@ plt.show()
 
 As you can see, the fire shows up clearly. NDVI inside the perimeter drops sharply in late 2018, then slowly starts climbing back through 2019 as vegetation starts to recover.
 
-To give that drop some more context, I added a second time series from a nearby unburned area in the Santa Monica Mountains as a baseline to compare. If the fire caused a real change in vegetation, and not just normal seasonal variation, the two lines should dramatically diverge after the November 2018 date.
+To give that drop some more context, I added a second time series from a nearby unburned area in the Santa Monica Mountains as a baseline to compare. If the fire caused a real change in vegetation, beyond just normal seasonal variation, the two lines should noticeably diverge after the November 2018 date.
 
 ```python
 # Defining a baseline geometry (unburned area in the Santa Monica Mtns)
@@ -320,13 +320,13 @@ plt.show()
 
 ![Fire scar vs. unburned baseline NDVI. The divergence after November 2018 is clear.](../../images/Scar_Unburned_NDVI_Timeseries.png)
 
-Before the Woolsey fire, both areas track each other pretty closely through the year. After the fire, the burned area drops hard while the unburned baseline just keeps doing its thing. There are significant vegetation impacts from the fire. 
+Before the Woolsey fire, both areas track each other pretty closely through the year. After the fire, the burned area drops hard while the unburned baseline maintains a generally flat line. There seems to be significant vegetation impacts from the fire. 
 
 ---
 
 ##### Step 5: LOWESS smoothing
 
-Even with clean data, individual satellite images can still be thrown off by leftover haze, thin clouds, or other atmospheric noise. These show up as random spikes or dips in the scatter plot. To smooth them out, and without losing the raw data, I applied a technique called LOWESS (Locally Weighted Scatterplot Smoothing). It is essentially just drawing a best-fit line through the data, but not just one straight line across everything, the algorithm fits a bunch of smaller, local curves that follow the shape of the data more naturally. The `frac` parameter controls how tight those local fits are. Here, I used 0.15, meaning each smoothed point considers 15% of the surrounding data when fitting its curve.
+Now, even with clean data, individual satellite images can still be thrown off by leftover haze, thin clouds, or other atmospheric noise. These show up as random spikes or dips in the scatter plot. To smooth them out, and without losing the raw data, I applied a technique called LOWESS (Locally Weighted Scatterplot Smoothing). It is similar to drawing a best-fit line through the data, but instead of just one straight line across everything, the algorithm fits a bunch of smaller, local curves that follow the shape of the data more naturally. The `frac` parameter controls how tight those local fits are. Here, I used a value of 0.15, meaning each smoothed point considers 15% of the surrounding data when fitting its curve.
 
 ```python
 # Applying temporal smoothing
@@ -398,4 +398,4 @@ plt.show()
 
 ![NDVI time series with LOWESS smoothing applied. Fire scar in red, unburned baseline in blue.](../../images/LOWESS_smooth.png)
 
-As you can see, the smoothed curves make the story easy to read. The fire scar NDVI abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. That unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, not just a normal part of the season.
+As you can see, the smoothed curves make the story easy to read. The NDVI for the Fire Scare abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. The blue unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, and not a normal part of the season.

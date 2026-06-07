@@ -462,7 +462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>As you can see, the fire shows up clearly. NDVI inside the perimeter drops sharply in late 2018, then slowly starts climbing back through 2019 as vegetation starts to recover.</p>
-<p>To give that drop some more context, I added a second time series from a nearby unburned area in the Santa Monica Mountains as a baseline to compare. If the fire caused a real change in vegetation, and not just normal seasonal variation, the two lines should dramatically diverge after the November 2018 date.</p>
+<p>To give that drop some more context, I added a second time series from a nearby unburned area in the Santa Monica Mountains as a baseline to compare. If the fire caused a real change in vegetation, beyond just normal seasonal variation, the two lines should noticeably diverge after the November 2018 date.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining a baseline geometry (unburned area in the Santa Monica Mtns)</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>baseline_geom <span class="op">=</span> ee.Geometry.BBox(<span class="op">-</span><span class="fl">118.5</span>, <span class="fl">34.05</span>, <span class="op">-</span><span class="fl">118.35</span>, <span class="fl">34.15</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -509,12 +509,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Fire scar vs.&nbsp;unburned baseline NDVI. The divergence after November 2018 is clear.</figcaption>
 </figure>
 </div>
-<p>Before the Woolsey fire, both areas track each other pretty closely through the year. After the fire, the burned area drops hard while the unburned baseline just keeps doing its thing. There are significant vegetation impacts from the fire.</p>
+<p>Before the Woolsey fire, both areas track each other pretty closely through the year. After the fire, the burned area drops hard while the unburned baseline maintains a generally flat line. There seems to be significant vegetation impacts from the fire.</p>
 <hr>
 </section>
 <section id="step-5-lowess-smoothing" class="level5">
 <h5 class="anchored" data-anchor-id="step-5-lowess-smoothing">Step 5: LOWESS smoothing</h5>
-<p>Even with clean data, individual satellite images can still be thrown off by leftover haze, thin clouds, or other atmospheric noise. These show up as random spikes or dips in the scatter plot. To smooth them out, and without losing the raw data, I applied a technique called LOWESS (Locally Weighted Scatterplot Smoothing). It is essentially just drawing a best-fit line through the data, but not just one straight line across everything, the algorithm fits a bunch of smaller, local curves that follow the shape of the data more naturally. The <code>frac</code> parameter controls how tight those local fits are. Here, I used 0.15, meaning each smoothed point considers 15% of the surrounding data when fitting its curve.</p>
+<p>Now, even with clean data, individual satellite images can still be thrown off by leftover haze, thin clouds, or other atmospheric noise. These show up as random spikes or dips in the scatter plot. To smooth them out, and without losing the raw data, I applied a technique called LOWESS (Locally Weighted Scatterplot Smoothing). It is similar to drawing a best-fit line through the data, but instead of just one straight line across everything, the algorithm fits a bunch of smaller, local curves that follow the shape of the data more naturally. The <code>frac</code> parameter controls how tight those local fits are. Here, I used a value of 0.15, meaning each smoothed point considers 15% of the surrounding data when fitting its curve.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying temporal smoothing</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Import LOWESS smoothing function</span></span>
@@ -586,7 +586,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>NDVI time series with LOWESS smoothing applied. Fire scar in red, unburned baseline in blue.</figcaption>
 </figure>
 </div>
-<p>As you can see, the smoothed curves make the story easy to read. The fire scar NDVI abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. That unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, not just a normal part of the season.</p>
+<p>As you can see, the smoothed curves make the story easy to read. The NDVI for the Fire Scare abruptly crashes in late 2018, starts to recover through the 2019 spring, and gradually returns to baseline patterns from there. The blue unburned baseline shows expected seasonal changes throughout the whole period. This visual gave me confidence in saying that the vegetation loss inside the fire perimeter was real and caused by the fire itself, and not a normal part of the season.</p>
 
 
 </section>
