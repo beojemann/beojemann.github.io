@@ -8,7 +8,7 @@
 
 <meta name="author" content="B. Emilio Ojemann, Luke Kaminskas, Wyatt Pieretti, Eric Mesropian">
 <meta name="dcterms.date" content="2026-06-01">
-<meta name="description" content="Leveraging remote sensing to analyze the year-to-year dynamics in Sierra Nevada snowpack levels and their implications for Lake Tahoe’s water clarity">
+<meta name="description" content="Leveraging remote sensing to analyze the year-to-year dynamics in Sierra Nevada snowpack levels and their implications for Lake Tahoe’s quality">
 
 <title>Snowpack Variability and Water Quality in Lake Tahoe – EMILIO</title>
 <style>
@@ -142,7 +142,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    Leveraging remote sensing to analyze the year-to-year dynamics in Sierra Nevada snowpack levels and their implications for Lake Tahoe’s water clarity
+    Leveraging remote sensing to analyze the year-to-year dynamics in Sierra Nevada snowpack levels and their implications for Lake Tahoe’s quality
   </div>
 </div>
 
@@ -174,27 +174,27 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 <section id="overview" class="level3">
 <h3 class="anchored" data-anchor-id="overview">Overview</h3>
-<p>Lake Tahoe sits on the California-Nevada border at over 6,000 feet above sea level, and holds some of the clearest water of any lake in the world. That clarity is scenic, though it also supports a multi-billion dollar recreation economy, supports fisheries, and provides drinking a large portion of water for cities in Nevada. Every spring, melting Sierra Nevada snow flows into the lake through rivers like the Upper Truckee, replenishing it for the year ahead.</p>
-<p>Our group wanted to know: does the <em>amount</em> of snow in a given year actually change the lake’s water quality? More snowmelt means more freshwater diluting whatever nutrients and sediment are already in the lake, but it also means more runoff carrying new material in. The net effect isn’t obvious, so we set out to measure it remotely, looking at nine years of satellite imagery from 2017 to 2025.</p>
+<p>Lake Tahoe sits on the California-Nevada border at over 6,000 feet above sea level, and holds some of the clearest water of any lake in the world. That clarity is scenic, though it also supports a multi-billion dollar recreation economy, produces healthy fisheries, and provides a large portion of drinking water for cities in Nevada. Every spring, melted Sierra Nevada snow flows into the lake through rivers like the Upper Truckee, replenishing it for the year ahead.</p>
+<p>Our group wanted to know: does the amount of snow in a given year actually change the lake’s water quality? More snowmelt means more freshwater diluting whatever nutrients and sediment are already in the lake, but it also means more runoff carrying in new material. The net effect isn’t obvious, so we set out to measure it remotely, looking at nine years of satellite imagery from 2017 to 2025.</p>
 <hr>
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>We pulled from three sources:</p>
 <ul>
-<li><p><strong>Sentinel-2 satellite imagery</strong> gave us a detailed spectral view of the lake surface every five days, at 10 to 20 meter resolution. It’s been collecting data since 2017, which defined our study window.</p></li>
-<li><p><strong>SNOTEL stations</strong> are automated snowpack sensors maintained by the USDA. We used 11 stations within the Lake Tahoe Basin to get peak snow water equivalent (SWE): think of this as the actual water content of the a given snowpack. Values were extracted for each year.</p></li>
-<li><p><strong>USGS streamflow records</strong> from the Upper Truckee River let us pinpoint <em>when</em> snowmelt was actually entering the lake each year, rather than assuming a fixed calendar date.</p></li>
+<li><p><strong>Sentinel-2 satellite imagery</strong> gave us a detailed spectral view of the lake’s surface every five days, at a 10 to 20 meter resolution. It’s been collecting data relevant to the study since 2017, which defined our time period.</p></li>
+<li><p><strong>SNOTEL stations</strong> are automated snowpack sensors maintained by the USDA. We used 11 stations within the Lake Tahoe Basin to determine the snow water equivalent (SWE). Think of this as the actual amount of water within a given snowpack. Peak SWE values were extracted for each study year.</p></li>
+<li><p><strong>USGS streamflow records</strong> from the Upper Truckee River gauge station let us pinpoint when snowmelt was actually entering the lake each year, rather than assuming the event occurs at a fixed calendar date.</p></li>
 </ul>
 <hr>
 </section>
 <section id="methods" class="level3">
 <h3 class="anchored" data-anchor-id="methods">Methods</h3>
 <p><strong>Step 1: Find the melt window</strong></p>
-<p>The timing of snowmelt shifts from year to year, so using the same date range each year would be comparing apples to oranges. Instead, we used a Temporal Centroid of Streamflow algorithm: we identified the date each year when 50% of spring discharge had passed through the Upper Truckee. That date became the center of a 30-day window representing peak loading into the lake. In 2017, for example, that center date was May 22, giving us a window of May 12 to June 11.</p>
+<p>The timing of snowmelt shifts from year to year, so using the same date range each year would lead to flawed analysis. Instead, we used the <strong>Temporal Centroid of Streamflow</strong> algorithm. We first identified the day each year when 50% of spring discharge had passed through the Upper Truckee. That date became the base of calculating a 30-day window representing a peak loading period of the lake. For example, in 2017 that center date was May 22, giving us a window of May 12 to June 11: 10 days before and 20 days after, giving more weight to the latter half of the period.</p>
 <p><strong>Step 2: Measure water quality from space</strong></p>
 <p>Within each melt window, we calculated two indices from the Sentinel-2 imagery:</p>
-<p><strong>NDCI</strong> measures chlorophyll-a concentration using the red edge and red bands. More chlorophyll generally means more algal activity.</p>
+<p><strong>NDCI</strong> measures chlorophyll-a concentration using the “red edge” and red bands. More chlorophyll generally means more algal activity.</p>
 <p><strong>NDTI</strong> measures turbidity using the red and green bands. Higher turbidity means more suspended sediment in the water.</p>
 <p>We cloud-masked all imagery before running the analysis to avoid bad pixels skewing results.</p>
 <p><strong>Step 3: Compare to snowpack</strong></p>
@@ -203,25 +203,27 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="results" class="level3">
 <h3 class="anchored" data-anchor-id="results">Results</h3>
-<p>No trend appeared. The R² for NDCI versus snowpack was 0.055, and for NDTI versus snowpack it was just 0.002. In plain terms: knowing how much snow fell in a given year tells you almost nothing about what the lake’s chlorophyll or turbidity looked like during snowmelt season.</p>
+<p>No strong trend appeared. The correlation coefficient (R²) for NDCI versus snowpack was 0.055, and for NDTI versus snowpack it was just 0.002. In plain terms: knowing how much snow fell in a given year tells you almost nothing about what the lake’s chlorophyll or turbidity looked like during snowmelt season.</p>
 <p>Both indices stayed consistently low across all nine years, which is actually good news for the lake. Tahoe is remarkably clean regardless of snowpack conditions. The biggest snow year in our dataset (2023, at 59.2 inches SWE) and the smallest (2022, at 18.2 inches) produced nearly identical water quality images.</p>
 <hr>
 </section>
 <section id="discussion" class="level3">
 <h3 class="anchored" data-anchor-id="discussion">Discussion</h3>
-<p>The result surprised us. We expected bigger snowpack to mean cleaner water through dilution, and it didn’t really affect it.</p>
+<p>The results surprised us. We expected bigger snowpack to mean cleaner water through dilution, and it didn’t really affect it.</p>
 <p>Part of the explanation may lie in the indices themselves. NDTI was designed for turbid, sediment-heavy water like rivers. In an exceptionally clear alpine lake, algal growth can produce a spectral signature that NDTI misreads as clean water. So the lake could have more biological activity in a high-snowpack year without our turbidity index picking it up. The NDCI metric has similar limitations in ultra-clear water.</p>
 <p>Future work would incorporate in-situ water samples to validate the satellite readings, add thermal imagery as an additional variable, and expand the time series as more Sentinel-2 data accumulates… the longer the record, the better chance we have of detecting the real inter-annual patterns.</p>
 <hr>
 </section>
 <section id="project-poster" class="level3">
 <h3 class="anchored" data-anchor-id="project-poster">Project Poster</h3>
+<p>Below is the research poster presented at the 2026 Geography Department Poster Symposium. This project was made in the culmination course of the department’s 3-quarter-long remote sensing series (GEOG 115A-B-C)</p>
 <iframe src="../../images/GEOG 115C Project Poster.pdf" width="100%" height="600px">
 </iframe>
 <hr>
 </section>
 <section id="project-slides" class="level3">
 <h3 class="anchored" data-anchor-id="project-slides">Project Slides</h3>
+<p>Below is the slide deck from the presentation our group made in front of the class, 2 days before the symposium.</p>
 <iframe src="../../images/GEOG 115C Project Presentation.pdf" width="100%" height="600px">
 </iframe>
 
