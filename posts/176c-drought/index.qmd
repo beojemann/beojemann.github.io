@@ -19,7 +19,7 @@ This project asks: how are those drought-driven land-use changes in Fresno and K
 
 ### Project Poster
 
-Below is the research poster presented at the 2026 Geography Department Poster Symposium. This project was made in the culmination course of the department’s 3-quarter-long intro-to-GIS series (GEOG 176A-B-C)
+Below is the research poster presented at the 2026 Geography Department Poster Symposium. This project was made in the culmination course of the department’s 3-quarter-long, intro-to-GIS series (GEOG 176A-B-C)
 
 <iframe src="../../images/176c_poster_pdf.pdf" width="100%" height="550px"></iframe>
 
