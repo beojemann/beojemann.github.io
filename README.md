@@ -2,7 +2,7 @@
 
 ## General Information
 
-This repository contains the source code for my own personal Quarto website, which was made as part of the ENVS 193DS course in Spring, 2026. The site includes multiple academic projects, research experience, and provides context for my studies of hydrology and geography.
+This repository contains the source code for my own personal Quarto website, which was made as part of the ENVS 193DS course in Spring, 2026. The website includes multiple academic projects, research experience, and provides context for my studies of hydrology and geography.
 
 ## Data and File Information
 
@@ -22,4 +22,4 @@ This repository contains the source code for my own personal Quarto website, whi
 
 ## Rendered Output
 
-[View live website](https://beojemann.github.io)
+[View website](https://beojemann.github.io)

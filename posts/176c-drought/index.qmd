@@ -4,7 +4,7 @@ description: "A GIS-based investigation into how drought-driven land-use shifts 
 author: "B. Emilio Ojemann, Anthony Romero, Gael Barrera, Abriel Lau"
 date: "2026-06-01"
 categories: [GIS, Research, Storymap]
-image: ../../images/176C_Slider_Image.png
+image: ../../images/176c-fresno-image.png
 ---
 
 ---
@@ -17,6 +17,14 @@ This project asks: how are those drought-driven land-use changes in Fresno and K
 
 ---
 
+### Project Poster
+
+Below is the research poster presented at the 2026 Geography Department Poster Symposium. This project was made in the culmination course of the department’s 3-quarter-long intro-to-GIS series (GEOG 176A-B-C)
+
+<iframe src="../../images/176c_poster_pdf.pdf" width="100%" height="550px"></iframe>
+
+---
+
 ### Explore the StoryMap
 
 The interactive StoryMap below walks through our full analysis, visualizations, and findings in detail.
@@ -25,12 +33,4 @@ The interactive StoryMap below walks through our full analysis, visualizations, 
 
 <iframe src="https://storymaps.arcgis.com/stories/6abf4262b41d4e8bb9cb62682c4b67a2" width="100%" height="700px" allowfullscreen></iframe>
 
----
 
-### Project Poster
-
-Below is the research poster presented at the 2026 Geography Department Poster Symposium. This project was made in the culmination course of the department’s 3-quarter-long intro-to-GIS series (GEOG 176A-B-C)
-
-<iframe src="../../images/176c_poster_pdf.pdf" width="100%" height="550px"></iframe>
-
----
